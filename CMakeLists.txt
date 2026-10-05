@@ -381,6 +381,7 @@ if(EMSCRIPTEN)
     # the more languages you add the slower downloading becomes, we decided to
     # only ship the English language.
     target_link_libraries(WASM::WASM INTERFACE "--preload-file ${CMAKE_BINARY_DIR}/baseset@/baseset")
+    target_link_libraries(WASM::WASM INTERFACE "--preload-file ${CMAKE_SOURCE_DIR}/bin/baseset@/baseset")
     target_link_libraries(WASM::WASM INTERFACE "--preload-file ${CMAKE_BINARY_DIR}/lang/english.lng@/lang/english.lng")
     target_link_libraries(WASM::WASM INTERFACE "--preload-file ${CMAKE_SOURCE_DIR}/bin/ai@/ai")
     target_link_libraries(WASM::WASM INTERFACE "--preload-file ${CMAKE_SOURCE_DIR}/bin/game@/game")
@@ -413,6 +414,13 @@ if(EMSCRIPTEN)
     # Build the .html (which builds the .js, .wasm, and .data too).
     set_target_properties(openttd PROPERTIES SUFFIX ".html")
     target_link_libraries(openttd WASM::WASM)
+
+    add_custom_command(TARGET openttd POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/os/emscripten/manifest.json ${CMAKE_BINARY_DIR}/manifest.json
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/os/emscripten/sw.js ${CMAKE_BINARY_DIR}/sw.js
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/os/emscripten/icon-192.png ${CMAKE_BINARY_DIR}/icon-192.png
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/os/emscripten/icon-512.png ${CMAKE_BINARY_DIR}/icon-512.png
+    )
 endif()
 
 if(NOT PERSONAL_DIR STREQUAL "(not set)")

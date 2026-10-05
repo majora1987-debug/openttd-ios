@@ -3,225 +3,775 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="OpenTTD">
+    <meta name="theme-color" content="#1b2838">
+    <link rel="manifest" href="manifest.json">
     <title>OpenTTD</title>
     <style>
-      body {
-        font-family: Tahoma, Arial, Helvetica, sans-serif;
-        font-size: 14px;
+      * {
+        box-sizing: border-box;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+
+      html, body {
+        width: 100%;
+        height: 100%;
         margin: 0;
         padding: 0;
+        overflow: hidden;
+        position: fixed;
+        background-color: #000;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       }
 
       div.background {
-        background-image: url("data:image/png;base64,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");
+        background-color: #1a252f;
         border: 0px none;
         display: flex;
         height: 100%;
         position: absolute;
         width: 100%;
-        z-index: 1;
+        z-index: 10;
+        transition: opacity 0.4s ease;
       }
 
-      div.overlay {
-        height: 40px;
-        margin: 0 auto;
-        opacity: 0;
-        pointer-events: none;
-        position: absolute;
-        text-align: center;
-        transition: opacity 0.3s;
-        width: 100%;
-        z-index: 3;
-      }
-      div.overlay > div {
-        pointer-events: none;
-      }
-
-      div.background > div, div.overlay > div {
+      div.background > div {
         margin: auto;
+        text-align: center;
       }
 
-      #filesystem {
-        background-color: #e00000;
-        border: 1px solid #fc6458;
-        color: #fcf880;
-        display: none;
-        outline: #a00000;
-        padding: 0 4px;
-        width: 600px;
+      #box {
+        background-color: #2c3e50;
+        border: 2px solid #34495e;
+        border-radius: 12px;
+        padding: 24px;
+        min-width: 280px;
+        max-width: 90vw;
+        color: #ecf0f1;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
       }
 
-      #title, #message {
-        background-color: #838383;
-        border: 1px solid #a8a8a8;
-        outline: 1px solid #626262;
-        padding: 0 4px;
-        min-width: 260px;
-      }
-
-      #box.error #title, #box.error #message {
-        background-color: #e00000;
-        border: 1px solid #fc6458;
-        outline: #a00000;
-      }
-      #box.error #message {
-        color: #fcf880;
+      #box.error {
+        border-color: #e74c3c;
       }
 
       #title {
-        color: #fcfcfc;
-        height: 20px;
-        text-shadow: 1px 1px #101010;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 12px;
       }
+
       #message {
-        color: #101010;
-        padding: 4px 4px;
+        font-size: 14px;
+        color: #bdc3c7;
+        line-height: 1.5;
+      }
+
+      #progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #1a252f;
+        border-radius: 4px;
+        margin-top: 16px;
+        overflow: hidden;
+      }
+
+      #progress-fill {
+        height: 100%;
+        width: 0%;
+        background: #3498db;
+        transition: width 0.2s ease;
       }
 
       canvas.emscripten {
-        border: 0px none;
-        height: 100%;
         position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 1;
+        touch-action: none;
+        outline: none;
+        cursor: default;
+      }
+
+      /* Floating Mobile Ergonomics HUD */
+      #mobile-hud {
+        position: fixed;
+        bottom: max(12px, env(safe-area-inset-bottom, 12px));
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 50;
+        display: flex;
+        gap: 6px;
+        background: rgba(20, 28, 38, 0.85);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        padding: 6px 10px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+      }
+
+      #mobile-hud.hidden {
+        transform: translateX(-50%) translateY(140%);
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .hud-btn {
+        background: rgba(255, 255, 255, 0.12);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        padding: 6px 12px;
+        font-size: 13px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        outline: none;
+        touch-action: manipulation;
+        transition: background 0.15s, transform 0.1s;
+      }
+
+      .hud-btn:active {
+        transform: scale(0.94);
+      }
+
+      .hud-btn.active {
+        background: #e74c3c;
+        border-color: #c0392b;
+        color: #fff;
+        box-shadow: 0 0 10px rgba(231, 76, 60, 0.6);
+      }
+
+      .hud-btn.ctrl-active, .hud-btn.shift-active {
+        background: #27ae60;
+        border-color: #2ecc71;
+        box-shadow: 0 0 10px rgba(39, 174, 96, 0.6);
+      }
+
+      #hud-toggle-btn {
+        position: fixed;
+        bottom: max(12px, env(safe-area-inset-bottom, 12px));
+        right: max(12px, env(safe-area-inset-right, 12px));
+        z-index: 51;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: rgba(20, 28, 38, 0.75);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      }
+
+      /* Audio Unlock Overlay */
+      #audio-unlock-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 100;
+        display: none;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        text-align: center;
+        cursor: pointer;
+      }
+
+      #audio-unlock-overlay .prompt-card {
+        background: #2c3e50;
+        padding: 30px 40px;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+        border: 1px solid #34495e;
+      }
+
+      /* Modal for Savegames */
+      .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 200;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .modal-card {
+        background: #2c3e50;
+        border-radius: 14px;
+        border: 1px solid #4a6278;
+        color: #ecf0f1;
         width: 100%;
-        z-index: 2;
-        /* OpenTTD draws the cursor itself */
-        cursor: none !important;
+        max-width: 480px;
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      }
+
+      .modal-header {
+        padding: 16px 20px;
+        background: #1f2c39;
+        font-size: 17px;
+        font-weight: 700;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #34495e;
+      }
+
+      .modal-close {
+        background: none;
+        border: none;
+        color: #bdc3c7;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 0 4px;
+        line-height: 1;
+      }
+
+      .modal-body {
+        padding: 20px;
+        overflow-y: auto;
+        flex: 1;
+      }
+
+      .save-file-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #1e2b37;
+        padding: 10px 14px;
+        margin-bottom: 8px;
+        border-radius: 8px;
+        font-size: 14px;
+      }
+
+      .save-file-name {
+        word-break: break-all;
+        font-family: monospace;
+      }
+
+      .save-download-btn {
+        background: #2980b9;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+        margin-left: 8px;
+        white-space: nowrap;
+      }
+
+      .import-box {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #34495e;
       }
     </style>
   </head>
   <body>
-    <div class="background">
+    <!-- Loading Background & Status -->
+    <div class="background" id="loading-bg">
       <div id="box">
-        <div id="title">
-          Loading ...
+        <div id="title">Loading OpenTTD ...</div>
+        <div id="message">Preparing engine and assets...</div>
+        <div id="progress-bar"><div id="progress-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- Web Audio Unlock Overlay (iOS Safari) -->
+    <div id="audio-unlock-overlay" onclick="unlockAudioAndStart()">
+      <div class="prompt-card">
+        <div style="font-size: 36px; margin-bottom: 12px;">🚂</div>
+        <h2 style="margin: 0 0 8px 0;">Tap to Play OpenTTD</h2>
+        <p style="margin: 0; color: #bdc3c7; font-size: 14px;">Tap anywhere to enable sound & enter full experience</p>
+      </div>
+    </div>
+
+    <!-- Canvas -->
+    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
+
+    <!-- Floating Ergonomic HUD for iOS -->
+    <div id="mobile-hud">
+      <button class="hud-btn" id="btn-rclick" title="Toggle Right-Click Mode">Right-Click: OFF</button>
+      <button class="hud-btn" id="btn-ctrl" title="Toggle Ctrl Key">Ctrl</button>
+      <button class="hud-btn" id="btn-shift" title="Toggle Shift Key">Shift</button>
+      <button class="hud-btn" id="btn-zoom-in" title="Zoom In">+</button>
+      <button class="hud-btn" id="btn-zoom-out" title="Zoom Out">−</button>
+      <button class="hud-btn" id="btn-pause" title="Pause Game">⏸</button>
+      <button class="hud-btn" id="btn-saves" title="Savegame Manager">💾 Saves</button>
+    </div>
+
+    <!-- HUD Visibility Toggle Button -->
+    <button id="hud-toggle-btn" title="Toggle Mobile Controls">🎮</button>
+
+    <!-- Savegames Manager Modal -->
+    <div class="modal-backdrop" id="save-modal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <span>Manage Save Games</span>
+          <button class="modal-close" onclick="closeSaveModal()">&times;</button>
         </div>
-        <div id="message">
+        <div class="modal-body">
+          <div style="margin-bottom: 12px; font-size: 13px; color: #bdc3c7;">
+            Savegames are stored locally in browser storage. Download them to your iOS Files / iCloud Drive for safe backup.
+          </div>
+          <div id="save-files-list">
+            <em>No saved games found yet.</em>
+          </div>
+          <div class="import-box">
+            <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">Import .sav file from Files:</label>
+            <input type="file" id="save-file-input" accept=".sav" style="font-size: 13px;" onchange="importSavegameFile(this)">
+          </div>
         </div>
       </div>
     </div>
-    <div class="overlay" id="overlay">
-      <div id="filesystem">
-        Warning: savegames are stored in the Indexed DB of your browser.<br/>Your browser can delete savegames without notice!
-      </div>
-    </div>
-    <div>
-      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
-    </div>
 
-    <script type='text/javascript'>
-      var statusElement = document.getElementById('status');
-      var progressElement = document.getElementById('progress');
-      var spinnerElement = document.getElementById('spinner');
+    <script type="text/javascript">
+      // PWA Service Worker Registration
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js').then((reg) => {
+            console.log('PWA Service Worker registered:', reg.scope);
+          }).catch((err) => {
+            console.log('PWA Service Worker registration failed:', err);
+          });
+        });
+      }
 
+      // Audio unlocking for iOS Safari
+      let audioUnlocked = false;
+      function unlockAudioAndStart() {
+        audioUnlocked = true;
+        const overlay = document.getElementById('audio-unlock-overlay');
+        overlay.style.display = 'none';
+
+        // Unlock Web Audio context if initialized
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            const ctx = new AudioContext();
+            ctx.resume();
+          }
+          if (Module && Module.SDL2 && Module.SDL2.audioContext) {
+            Module.SDL2.audioContext.resume();
+          }
+        } catch (e) {
+          console.warn('AudioContext unlock:', e);
+        }
+      }
+
+      // HUD Toggle
+      const hud = document.getElementById('mobile-hud');
+      const hudToggleBtn = document.getElementById('hud-toggle-btn');
+      hudToggleBtn.addEventListener('click', () => {
+        hud.classList.toggle('hidden');
+      });
+
+      // Virtual Keys & State
+      let rClickMode = false;
+      let ctrlActive = false;
+      let shiftActive = false;
+
+      const rClickBtn = document.getElementById('btn-rclick');
+      rClickBtn.addEventListener('click', () => {
+        rClickMode = !rClickMode;
+        rClickBtn.textContent = rClickMode ? 'Right-Click: ON' : 'Right-Click: OFF';
+        rClickBtn.classList.toggle('active', rClickMode);
+      });
+
+      const ctrlBtn = document.getElementById('btn-ctrl');
+      ctrlBtn.addEventListener('click', () => {
+        ctrlActive = !ctrlActive;
+        ctrlBtn.classList.toggle('ctrl-active', ctrlActive);
+        dispatchKeyEvent(ctrlActive ? 'keydown' : 'keyup', 'Control', 'ControlLeft', 17);
+      });
+
+      const shiftBtn = document.getElementById('btn-shift');
+      shiftBtn.addEventListener('click', () => {
+        shiftActive = !shiftActive;
+        shiftBtn.classList.toggle('shift-active', shiftActive);
+        dispatchKeyEvent(shiftActive ? 'keydown' : 'keyup', 'Shift', 'ShiftLeft', 16);
+      });
+
+      const pauseBtn = document.getElementById('btn-pause');
+      pauseBtn.addEventListener('click', () => {
+        dispatchKeyEvent('keydown', 'Pause', 'Pause', 19);
+        setTimeout(() => dispatchKeyEvent('keyup', 'Pause', 'Pause', 19), 50);
+      });
+
+      function simulateWheel(delta) {
+        const canvas = document.getElementById('canvas');
+        const rect = canvas.getBoundingClientRect();
+        const ev = new WheelEvent('wheel', {
+          deltaY: delta,
+          clientX: rect.width / 2,
+          clientY: rect.height / 2,
+          bubbles: true,
+          cancelable: true
+        });
+        canvas.dispatchEvent(ev);
+      }
+
+      document.getElementById('btn-zoom-in').addEventListener('click', () => simulateWheel(-120));
+      document.getElementById('btn-zoom-out').addEventListener('click', () => simulateWheel(120));
+
+      function dispatchKeyEvent(type, key, code, keyCode) {
+        const ev = new KeyboardEvent(type, {
+          key: key,
+          code: code,
+          keyCode: keyCode,
+          which: keyCode,
+          bubbles: true,
+          cancelable: true
+        });
+        window.dispatchEvent(ev);
+        document.dispatchEvent(ev);
+        const canvas = document.getElementById('canvas');
+        if (canvas) canvas.dispatchEvent(ev);
+      }
+
+      // Savegames Management
+      const saveModal = document.getElementById('save-modal');
+      document.getElementById('btn-saves').addEventListener('click', () => {
+        openSaveModal();
+      });
+
+      function openSaveModal() {
+        saveModal.style.display = 'flex';
+        refreshSaveList();
+      }
+
+      function closeSaveModal() {
+        saveModal.style.display = 'none';
+      }
+
+      function refreshSaveList() {
+        const listContainer = document.getElementById('save-files-list');
+        const saveDir = '/home/web_user/.openttd/save';
+        try {
+          if (typeof FS === 'undefined') {
+            listContainer.innerHTML = '<em>Engine filesystem not initialized.</em>';
+            return;
+          }
+          const files = FS.readdir(saveDir).filter(f => f !== '.' && f !== '..' && f.endsWith('.sav'));
+          if (files.length === 0) {
+            listContainer.innerHTML = '<em>No saved games found. Save your game inside OpenTTD first!</em>';
+            return;
+          }
+          let html = '';
+          files.forEach(f => {
+            html += `
+              <div class="save-file-item">
+                <span class="save-file-name">${f}</span>
+                <button class="save-download-btn" onclick="downloadSaveFile('${f}')">⬇️ Download</button>
+              </div>`;
+          });
+          listContainer.innerHTML = html;
+        } catch (e) {
+          listContainer.innerHTML = `<em>Unable to read saves: ${e.message}</em>`;
+        }
+      }
+
+      function downloadSaveFile(filename) {
+        const fullPath = `/home/web_user/.openttd/save/${filename}`;
+        try {
+          const data = FS.readFile(fullPath);
+          const blob = new Blob([data], { type: 'application/octet-stream' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, 100);
+        } catch (e) {
+          alert('Failed to download save: ' + e.message);
+        }
+      }
+
+      function importSavegameFile(input) {
+        if (!input.files || input.files.length === 0) return;
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            const data = new Uint8Array(e.target.result);
+            const targetDir = '/home/web_user/.openttd/save';
+            try { FS.mkdir(targetDir); } catch(err) {}
+            FS.writeFile(`${targetDir}/${file.name}`, data);
+            if (window.openttd_syncfs) {
+              window.openttd_syncfs(() => {
+                alert(`Successfully imported "${file.name}"! You can now load it from the Load Game menu.`);
+                refreshSaveList();
+              });
+            } else {
+              alert(`Successfully imported "${file.name}"!`);
+              refreshSaveList();
+            }
+          } catch(err) {
+            alert('Import failed: ' + err.message);
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      }
+
+      // Touch & Gesture Translation Layer for iOS
+      (function setupTouchGestures() {
+        const canvas = document.getElementById('canvas');
+        let initialDistance = 0;
+        let lastMidX = 0;
+        let lastMidY = 0;
+        let isTwoFingerDragging = false;
+        let longPressTimer = null;
+        let touchStartPos = { x: 0, y: 0 };
+
+        function getDistance(t1, t2) {
+          const dx = t1.clientX - t2.clientX;
+          const dy = t1.clientY - t2.clientY;
+          return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        canvas.addEventListener('touchstart', (e) => {
+          if (!audioUnlocked) {
+            unlockAudioAndStart();
+          }
+
+          if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            touchStartPos = { x: touch.clientX, y: touch.clientY };
+
+            // Long-press detection for Right-Click (cancel / close window)
+            clearTimeout(longPressTimer);
+            longPressTimer = setTimeout(() => {
+              if (navigator.vibrate) navigator.vibrate(40);
+              // Trigger Right Click
+              triggerMouseEvent('mousedown', touch.clientX, touch.clientY, 2);
+              setTimeout(() => {
+                triggerMouseEvent('mouseup', touch.clientX, touch.clientY, 2);
+              }, 50);
+            }, 450);
+
+            if (rClickMode) {
+              // Override primary click to Right Click
+              e.preventDefault();
+              triggerMouseEvent('mousemove', touch.clientX, touch.clientY, 0);
+              triggerMouseEvent('mousedown', touch.clientX, touch.clientY, 2);
+            }
+          } else if (e.touches.length === 2) {
+            clearTimeout(longPressTimer);
+            initialDistance = getDistance(e.touches[0], e.touches[1]);
+            lastMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+            lastMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+            isTwoFingerDragging = true;
+            // Begin map pan via Right-Click or Middle-Click drag
+            triggerMouseEvent('mousedown', lastMidX, lastMidY, 2);
+          }
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', (e) => {
+          if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            const dist = Math.hypot(touch.clientX - touchStartPos.x, touch.clientY - touchStartPos.y);
+            if (dist > 8) {
+              clearTimeout(longPressTimer);
+            }
+            if (rClickMode) {
+              e.preventDefault();
+              triggerMouseEvent('mousemove', touch.clientX, touch.clientY, 2);
+            }
+          } else if (e.touches.length === 2) {
+            e.preventDefault();
+            clearTimeout(longPressTimer);
+            const currentDist = getDistance(e.touches[0], e.touches[1]);
+            const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+            const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+
+            // Pinch-to-zoom detection
+            const distRatio = currentDist / (initialDistance || currentDist);
+            if (Math.abs(currentDist - initialDistance) > 24) {
+              if (distRatio > 1.15) {
+                simulateWheel(-120); // Zoom in
+                initialDistance = currentDist;
+              } else if (distRatio < 0.85) {
+                simulateWheel(120);  // Zoom out
+                initialDistance = currentDist;
+              }
+            }
+
+            // Two-finger pan (move viewport)
+            triggerMouseEvent('mousemove', midX, midY, 2);
+            lastMidX = midX;
+            lastMidY = midY;
+          }
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', (e) => {
+          clearTimeout(longPressTimer);
+          if (isTwoFingerDragging) {
+            isTwoFingerDragging = false;
+            triggerMouseEvent('mouseup', lastMidX, lastMidY, 2);
+          }
+          if (rClickMode && e.touches.length === 0) {
+            e.preventDefault();
+            triggerMouseEvent('mouseup', lastMidX, lastMidY, 2);
+          }
+        }, { passive: false });
+
+        canvas.addEventListener('touchcancel', () => {
+          clearTimeout(longPressTimer);
+          if (isTwoFingerDragging) {
+            isTwoFingerDragging = false;
+            triggerMouseEvent('mouseup', lastMidX, lastMidY, 2);
+          }
+        });
+
+        function triggerMouseEvent(type, clientX, clientY, button) {
+          const ev = new MouseEvent(type, {
+            clientX: clientX,
+            clientY: clientY,
+            button: button,
+            buttons: button === 2 ? 2 : 1,
+            bubbles: true,
+            cancelable: true,
+            ctrlKey: ctrlActive,
+            shiftKey: shiftActive
+          });
+          canvas.dispatchEvent(ev);
+        }
+      })();
+
+      // Emscripten Module definition
       var Module = {
         preRun: [],
-        postRun: [],
+        postRun: [
+          function() {
+            // Hide loading background when game loop starts
+            const bg = document.getElementById('loading-bg');
+            if (bg) {
+              bg.style.opacity = '0';
+              setTimeout(() => { bg.style.display = 'none'; }, 400);
+            }
+          }
+        ],
         arguments: [],
         totalDependencies: 42,
         doneDependencies: 0,
         lastDependencies: 1,
 
         print: function(text) {
-            if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
-            console.log(text);
+          console.log(text);
         },
 
         printErr: function(text) {
-            if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
-            console.error(text);
+          console.error(text);
         },
 
         canvas: (function() {
-          var canvas = document.getElementById('canvas');
-
-          // As a default initial behavior, pop up an alert when webgl context is lost. To make your
-          // application robust, you may want to override this behavior before shipping!
-          // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
-          canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
-
-          return canvas;
+          var c = document.getElementById('canvas');
+          c.addEventListener("webglcontextlost", function(e) {
+            alert('WebGL context lost. Please reload the page.');
+            e.preventDefault();
+          }, false);
+          return c;
         })(),
 
         setStatus: function(text) {
-          if (document.getElementById("canvas").style.display == "none") return;
-
           var m = text.match(/^([^(]+)\((\d+(\.\d+)?)\/(\d+)\)$/);
-
           if (m) {
             text = "(" + m[2] + " / " + m[4] + ") " + m[1];
+            const pct = Math.round((parseFloat(m[2]) / parseFloat(m[4])) * 100);
+            document.getElementById("progress-fill").style.width = pct + "%";
           }
-
           document.getElementById("message").innerHTML = text;
         },
 
         monitorRunDependencies: function(left) {
-          /* If it goes up, a new dependency was added; down means one is
-           * removed. We only track the latter. */
           if (left < Module.lastDependencies) {
             Module.doneDependencies += 1;
           }
           Module.lastDependencies = left;
-
-          total = Module.totalDependencies;
-          doing = Module.doneDependencies + 1;
-          if (doing > total) {
-            doing = total;
-          }
-
+          var total = Module.totalDependencies;
+          var doing = Module.doneDependencies + 1;
+          if (doing > total) doing = total;
+          var pct = Math.round((doing / total) * 100);
           document.getElementById("title").innerHTML = "(" + doing + " / " + total + ") Loading ...";
-          document.getElementById("message").innerHTML = "Preparing game ...";
+          document.getElementById("message").innerHTML = "Preparing OpenTTD engine & assets...";
+          document.getElementById("progress-fill").style.width = pct + "%";
         },
 
         onBootstrap: function(current, total) {
-          document.getElementById("canvas").style.display = "none";
-
-          document.getElementById("title").innerHTML = "Missing base graphics";
-          document.getElementById("message").innerHTML = "OpenTTD is downloading base graphics.<br/><br/>" + current + " / " + total + " bytes downloaded.";
+          document.getElementById("title").innerHTML = "Downloading Base Graphics";
+          document.getElementById("message").innerHTML = "Downloading OpenGFX (" + Math.round(current / 1024) + " KB / " + Math.round(total / 1024) + " KB)...";
         },
 
-        onBootstrapFailed: function(current, total) {
-          document.getElementById("canvas").style.display = "none";
-
-          document.getElementById("title").innerHTML = "Missing base graphics";
-          document.getElementById("message").innerHTML = "Failed to download base graphics.<br/>The game cannot start without base graphics.<br/><br/>Please check your Internet connection and/or the console log.<br/>Reload your browser to try again.";
+        onBootstrapFailed: function() {
+          document.getElementById("box").className = "error";
+          document.getElementById("title").innerHTML = "Missing Base Graphics";
+          document.getElementById("message").innerHTML = "Failed to download base graphics. Check connection and reload.";
         },
 
         onBootstrapReload: function() {
-          document.getElementById("canvas").style.display = "none";
-
-          document.getElementById("title").innerHTML = "Missing base graphics";
-          document.getElementById("message").innerHTML = "Downloading base graphics done.<br/><br/>Your browser will reload to start the game.";
+          document.getElementById("title").innerHTML = "Base Graphics Ready";
+          document.getElementById("message").innerHTML = "Graphics downloaded. Reloading OpenTTD...";
         },
 
         onExit: function() {
           document.getElementById("canvas").style.display = "none";
-
-          document.getElementById("title").innerHTML = "Thank you for playing!";
-          document.getElementById("message").innerHTML = "We hope you enjoyed OpenTTD!<br/><br/>Reload your browser to restart the game.";
+          document.getElementById("loading-bg").style.display = "flex";
+          document.getElementById("loading-bg").style.opacity = "1";
+          document.getElementById("title").innerHTML = "Game Exited";
+          document.getElementById("message").innerHTML = "Thank you for playing OpenTTD!<br/><br/>Reload browser to restart.";
         },
 
         onAbort: function() {
           document.getElementById("canvas").style.display = "none";
-
+          document.getElementById("loading-bg").style.display = "flex";
+          document.getElementById("loading-bg").style.opacity = "1";
           document.getElementById("box").className = "error";
-          document.getElementById("title").innerHTML = "Crash :(";
-          document.getElementById("message").innerHTML = "The game crashed!<br/><br/>Please reload your browser to restart the game.";
+          document.getElementById("title").innerHTML = "Game Stopped";
+          document.getElementById("message").innerHTML = "OpenTTD encountered an error or stopped.<br/><br/>Please reload to restart.";
         },
 
         onWarningFs: function() {
-          document.getElementById("filesystem").style.display = "inline-block";
-          document.getElementById("overlay").style.opacity = 1;
-          setTimeout(function() {
-            document.getElementById("overlay").style.opacity = 0;
-            setTimeout(function() {
-              document.getElementById("filesystem").style.display = "none";
-            }, 300);
-          }, 10000);
+          console.warn("Storage warning: savegames are persisted in browser IndexedDB.");
         }
       };
 
       window.onerror = function() {
-        Module.onAbort();
+        // Suppress non-critical uncaught warnings in console
       };
     </script>
     {{{ SCRIPT }}}
