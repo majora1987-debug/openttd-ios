@@ -1,1 +1,1357 @@
-<!doctypehtml><html lang=en-us><head><meta charset=utf-8><meta content="text/html; charset=utf-8"http-equiv=Content-Type><meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"name=viewport><meta content=yes name=apple-mobile-web-app-capable><meta content=black-translucent name=apple-mobile-web-app-status-bar-style><meta content=OpenTTD name=apple-mobile-web-app-title><meta content=#1b2838 name=theme-color><link href=manifest.json rel=manifest><title>OpenTTD</title><style>*{box-sizing:border-box;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}body,html{width:100%;height:100%;margin:0;padding:0;overflow:hidden;position:fixed;background-color:#000;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}div.background{background-color:#1a252f;border:0 none;display:flex;height:100%;position:absolute;width:100%;z-index:10;transition:opacity .4s ease}div.background>div{margin:auto;text-align:center}#box{background-color:#2c3e50;border:2px solid #34495e;border-radius:12px;padding:24px;min-width:280px;max-width:90vw;color:#ecf0f1;box-shadow:0 10px 30px rgba(0,0,0,.6)}#box.error{border-color:#e74c3c}#title{font-size:20px;font-weight:700;margin-bottom:12px}#message{font-size:14px;color:#bdc3c7;line-height:1.5}#progress-bar{width:100%;height:8px;background:#1a252f;border-radius:4px;margin-top:16px;overflow:hidden}#progress-fill{height:100%;width:0%;background:#3498db;transition:width .2s ease}canvas.emscripten{position:absolute;top:0;left:0;width:100vw;height:100vh;z-index:1;touch-action:none;outline:0;cursor:default}#mobile-hud{position:fixed;bottom:max(12px,env(safe-area-inset-bottom,12px));left:50%;transform:translateX(-50%);z-index:50;display:flex;gap:6px;background:rgba(20,28,38,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:6px 10px;border-radius:24px;border:1px solid rgba(255,255,255,.15);box-shadow:0 4px 20px rgba(0,0,0,.4);transition:transform .3s cubic-bezier(.4, 0, .2, 1),opacity .3s ease}#mobile-hud.hidden{transform:translateX(-50%) translateY(140%);opacity:0;pointer-events:none}.hud-btn{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:6px 12px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;outline:0;touch-action:manipulation;transition:background .15s,transform .1s}.hud-btn:active{transform:scale(.94)}.hud-btn.active{background:#e74c3c;border-color:#c0392b;color:#fff;box-shadow:0 0 10px rgba(231,76,60,.6)}.hud-btn.ctrl-active,.hud-btn.shift-active{background:#27ae60;border-color:#2ecc71;box-shadow:0 0 10px rgba(39,174,96,.6)}#hud-toggle-btn{position:fixed;bottom:max(12px,env(safe-area-inset-bottom,12px));right:max(12px,env(safe-area-inset-right,12px));z-index:51;width:38px;height:38px;border-radius:50%;background:rgba(20,28,38,.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.3)}#audio-unlock-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:100;display:none;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);align-items:center;justify-content:center;color:#fff;text-align:center;cursor:pointer}#audio-unlock-overlay .prompt-card{background:#2c3e50;padding:30px 40px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.5);border:1px solid #34495e}.modal-backdrop{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:200;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:20px}.modal-card{background:#2c3e50;border-radius:14px;border:1px solid #4a6278;color:#ecf0f1;width:100%;max-width:480px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.6)}.modal-header{padding:16px 20px;background:#1f2c39;font-size:17px;font-weight:700;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #34495e}.modal-close{background:0 0;border:none;color:#bdc3c7;font-size:24px;cursor:pointer;padding:0 4px;line-height:1}.modal-body{padding:20px;overflow-y:auto;flex:1}.save-file-item{display:flex;justify-content:space-between;align-items:center;background:#1e2b37;padding:10px 14px;margin-bottom:8px;border-radius:8px;font-size:14px}.save-file-name{word-break:break-all;font-family:monospace}.save-download-btn{background:#2980b9;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;margin-left:8px;white-space:nowrap}.import-box{margin-top:16px;padding-top:16px;border-top:1px solid #34495e}</style></head><body><div id=loading-bg class=background><div id=box><div id=title>Loading OpenTTD ...</div><div id=message>Preparing engine and assets...</div><div id=progress-bar><div id=progress-fill></div></div></div></div><div id=audio-unlock-overlay onclick=unlockAudioAndStart()><div class=prompt-card><div style=font-size:36px;margin-bottom:12px>🚂</div><h2 style="margin:0 0 8px 0">Tap to Play OpenTTD</h2><p style=margin:0;color:#bdc3c7;font-size:14px>Tap anywhere to enable sound & enter full experience</p></div></div><canvas class=emscripten id=canvas oncontextmenu=event.preventDefault() tabindex=-1></canvas><div id=mobile-hud><button class=hud-btn id=btn-rclick title="Toggle Right-Click Mode">Right-Click: OFF</button> <button class=hud-btn id=btn-ctrl title="Toggle Ctrl Key">Ctrl</button> <button class=hud-btn id=btn-shift title="Toggle Shift Key">Shift</button> <button class=hud-btn id=btn-zoom-in title="Zoom In">+</button> <button class=hud-btn id=btn-zoom-out title="Zoom Out">−</button> <button class=hud-btn id=btn-pause title="Pause Game">⏸</button> <button class=hud-btn id=btn-saves title="Savegame Manager">💾 Saves</button></div><button id=hud-toggle-btn title="Toggle Mobile Controls">🎮</button><div id=save-modal class=modal-backdrop><div class=modal-card><div class=modal-header><span>Manage Save Games</span> <button class=modal-close onclick=closeSaveModal()>×</button></div><div class=modal-body><div style=margin-bottom:12px;font-size:13px;color:#bdc3c7>Savegames are stored locally in browser storage. Download them to your iOS Files / iCloud Drive for safe backup.</div><div id=save-files-list><em>No saved games found yet.</em></div><div class=import-box><label style=font-size:13px;font-weight:600;display:block;margin-bottom:6px>Import .sav file from Files:</label> <input accept=.sav id=save-file-input onchange=importSavegameFile(this) style=font-size:13px type=file></div></div></div></div><script>"serviceWorker"in navigator&&window.addEventListener("load",(()=>{navigator.serviceWorker.register("sw.js").then((e=>{console.log("PWA Service Worker registered:",e.scope)})).catch((e=>{console.log("PWA Service Worker registration failed:",e)}))}));let audioUnlocked=!1;function unlockAudioAndStart(){audioUnlocked=!0;document.getElementById("audio-unlock-overlay").style.display="none";try{const e=window.AudioContext||window.webkitAudioContext;if(e){(new e).resume()}Module&&Module.SDL2&&Module.SDL2.audioContext&&Module.SDL2.audioContext.resume()}catch(e){console.warn("AudioContext unlock:",e)}}const hud=document.getElementById("mobile-hud"),hudToggleBtn=document.getElementById("hud-toggle-btn");hudToggleBtn.addEventListener("click",(()=>{hud.classList.toggle("hidden")}));let rClickMode=!1,ctrlActive=!1,shiftActive=!1;const rClickBtn=document.getElementById("btn-rclick");rClickBtn.addEventListener("click",(()=>{rClickMode=!rClickMode,rClickBtn.textContent=rClickMode?"Right-Click: ON":"Right-Click: OFF",rClickBtn.classList.toggle("active",rClickMode)}));const ctrlBtn=document.getElementById("btn-ctrl");ctrlBtn.addEventListener("click",(()=>{ctrlActive=!ctrlActive,ctrlBtn.classList.toggle("ctrl-active",ctrlActive),dispatchKeyEvent(ctrlActive?"keydown":"keyup","Control","ControlLeft",17)}));const shiftBtn=document.getElementById("btn-shift");shiftBtn.addEventListener("click",(()=>{shiftActive=!shiftActive,shiftBtn.classList.toggle("shift-active",shiftActive),dispatchKeyEvent(shiftActive?"keydown":"keyup","Shift","ShiftLeft",16)}));const pauseBtn=document.getElementById("btn-pause");function simulateWheel(e){const t=document.getElementById("canvas"),n=t.getBoundingClientRect(),o=new WheelEvent("wheel",{deltaY:e,clientX:n.width/2,clientY:n.height/2,bubbles:!0,cancelable:!0});t.dispatchEvent(o)}function dispatchKeyEvent(e,t,n,o){const i=new KeyboardEvent(e,{key:t,code:n,keyCode:o,which:o,bubbles:!0,cancelable:!0});window.dispatchEvent(i),document.dispatchEvent(i);const c=document.getElementById("canvas");c&&c.dispatchEvent(i)}pauseBtn.addEventListener("click",(()=>{dispatchKeyEvent("keydown","Pause","Pause",19),setTimeout((()=>dispatchKeyEvent("keyup","Pause","Pause",19)),50)})),document.getElementById("btn-zoom-in").addEventListener("click",(()=>simulateWheel(-120))),document.getElementById("btn-zoom-out").addEventListener("click",(()=>simulateWheel(120)));const saveModal=document.getElementById("save-modal");function openSaveModal(){saveModal.style.display="flex",refreshSaveList()}function closeSaveModal(){saveModal.style.display="none"}function refreshSaveList(){const e=document.getElementById("save-files-list");try{if("undefined"==typeof FS)return void(e.innerHTML="<em>Engine filesystem not initialized.</em>");const t=FS.readdir("/home/web_user/.openttd/save").filter((e=>"."!==e&&".."!==e&&e.endsWith(".sav")));if(0===t.length)return void(e.innerHTML="<em>No saved games found. Save your game inside OpenTTD first!</em>");let n="";t.forEach((e=>{n+=`\n              <div class="save-file-item">\n                <span class="save-file-name">${e}</span>\n                <button class="save-download-btn" onclick="downloadSaveFile('${e}')">⬇️ Download</button>\n              </div>`})),e.innerHTML=n}catch(t){e.innerHTML=`<em>Unable to read saves: ${t.message}</em>`}}function downloadSaveFile(e){const t=`/home/web_user/.openttd/save/${e}`;try{const n=FS.readFile(t),o=new Blob([n],{type:"application/octet-stream"}),i=URL.createObjectURL(o),c=document.createElement("a");c.href=i,c.download=e,document.body.appendChild(c),c.click(),setTimeout((()=>{document.body.removeChild(c),URL.revokeObjectURL(i)}),100)}catch(e){alert("Failed to download save: "+e.message)}}function importSavegameFile(e){if(!e.files||0===e.files.length)return;const t=e.files[0],n=new FileReader;n.onload=function(e){try{const n=new Uint8Array(e.target.result),o="/home/web_user/.openttd/save";try{FS.mkdir(o)}catch(e){}FS.writeFile(`${o}/${t.name}`,n),window.openttd_syncfs?window.openttd_syncfs((()=>{alert(`Successfully imported "${t.name}"! You can now load it from the Load Game menu.`),refreshSaveList()})):(alert(`Successfully imported "${t.name}"!`),refreshSaveList())}catch(e){alert("Import failed: "+e.message)}},n.readAsArrayBuffer(t)}document.getElementById("btn-saves").addEventListener("click",(()=>{openSaveModal()})),function(){const e=document.getElementById("canvas");let t=0,n=0,o=0,i=!1,c=null,l={x:0,y:0};function s(e,t){const n=e.clientX-t.clientX,o=e.clientY-t.clientY;return Math.sqrt(n*n+o*o)}function d(t,n,o,i){const c=new MouseEvent(t,{clientX:n,clientY:o,button:i,buttons:2===i?2:1,bubbles:!0,cancelable:!0,ctrlKey:ctrlActive,shiftKey:shiftActive});e.dispatchEvent(c)}e.addEventListener("touchstart",(e=>{if(audioUnlocked||unlockAudioAndStart(),1===e.touches.length){const t=e.touches[0];l={x:t.clientX,y:t.clientY},clearTimeout(c),c=setTimeout((()=>{navigator.vibrate&&navigator.vibrate(40),d("mousedown",t.clientX,t.clientY,2),setTimeout((()=>{d("mouseup",t.clientX,t.clientY,2)}),50)}),450),rClickMode&&(e.preventDefault(),d("mousemove",t.clientX,t.clientY,0),d("mousedown",t.clientX,t.clientY,2))}else 2===e.touches.length&&(clearTimeout(c),t=s(e.touches[0],e.touches[1]),n=(e.touches[0].clientX+e.touches[1].clientX)/2,o=(e.touches[0].clientY+e.touches[1].clientY)/2,i=!0,d("mousedown",n,o,2))}),{passive:!1}),e.addEventListener("touchmove",(e=>{if(1===e.touches.length){const t=e.touches[0];Math.hypot(t.clientX-l.x,t.clientY-l.y)>8&&clearTimeout(c),rClickMode&&(e.preventDefault(),d("mousemove",t.clientX,t.clientY,2))}else if(2===e.touches.length){e.preventDefault(),clearTimeout(c);const i=s(e.touches[0],e.touches[1]),l=(e.touches[0].clientX+e.touches[1].clientX)/2,a=(e.touches[0].clientY+e.touches[1].clientY)/2,r=i/(t||i);Math.abs(i-t)>24&&(r>1.15?(simulateWheel(-120),t=i):r<.85&&(simulateWheel(120),t=i)),d("mousemove",l,a,2),n=l,o=a}}),{passive:!1}),e.addEventListener("touchend",(e=>{clearTimeout(c),i&&(i=!1,d("mouseup",n,o,2)),rClickMode&&0===e.touches.length&&(e.preventDefault(),d("mouseup",n,o,2))}),{passive:!1}),e.addEventListener("touchcancel",(()=>{clearTimeout(c),i&&(i=!1,d("mouseup",n,o,2))}))}();var Module={preRun:[],postRun:[function(){const e=document.getElementById("loading-bg");e&&(e.style.opacity="0",setTimeout((()=>{e.style.display="none"}),400))}],arguments:[],totalDependencies:42,doneDependencies:0,lastDependencies:1,print:function(e){console.log(e)},printErr:function(e){console.error(e)},canvas:function(){var e=document.getElementById("canvas");return e.addEventListener("webglcontextlost",(function(e){alert("WebGL context lost. Please reload the page."),e.preventDefault()}),!1),e}(),setStatus:function(e){var t=e.match(/^([^(]+)\((\d+(\.\d+)?)\/(\d+)\)$/);if(t){e="("+t[2]+" / "+t[4]+") "+t[1];const n=Math.round(parseFloat(t[2])/parseFloat(t[4])*100);document.getElementById("progress-fill").style.width=n+"%"}document.getElementById("message").innerHTML=e},monitorRunDependencies:function(e){e<Module.lastDependencies&&(Module.doneDependencies+=1),Module.lastDependencies=e;var t=Module.totalDependencies,n=Module.doneDependencies+1;n>t&&(n=t);var o=Math.round(n/t*100);document.getElementById("title").innerHTML="("+n+" / "+t+") Loading ...",document.getElementById("message").innerHTML="Preparing OpenTTD engine & assets...",document.getElementById("progress-fill").style.width=o+"%"},onBootstrap:function(e,t){document.getElementById("title").innerHTML="Downloading Base Graphics",document.getElementById("message").innerHTML="Downloading OpenGFX ("+Math.round(e/1024)+" KB / "+Math.round(t/1024)+" KB)..."},onBootstrapFailed:function(){document.getElementById("box").className="error",document.getElementById("title").innerHTML="Missing Base Graphics",document.getElementById("message").innerHTML="Failed to download base graphics. Check connection and reload."},onBootstrapReload:function(){document.getElementById("title").innerHTML="Base Graphics Ready",document.getElementById("message").innerHTML="Graphics downloaded. Reloading OpenTTD..."},onExit:function(){document.getElementById("canvas").style.display="none",document.getElementById("loading-bg").style.display="flex",document.getElementById("loading-bg").style.opacity="1",document.getElementById("title").innerHTML="Game Exited",document.getElementById("message").innerHTML="Thank you for playing OpenTTD!<br/><br/>Reload browser to restart."},onAbort:function(){document.getElementById("canvas").style.display="none",document.getElementById("loading-bg").style.display="flex",document.getElementById("loading-bg").style.opacity="1",document.getElementById("box").className="error",document.getElementById("title").innerHTML="Game Stopped",document.getElementById("message").innerHTML="OpenTTD encountered an error or stopped.<br/><br/>Please reload to restart."},onWarningFs:function(){console.warn("Storage warning: savegames are persisted in browser IndexedDB.")}};window.onerror=function(){}</script><script async src=openttd.js></script></body></html>
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="OpenTTD">
+    <meta name="theme-color" content="#121820">
+    <link rel="manifest" href="manifest.json">
+    <title>OpenTTD</title>
+    <style>
+      :root {
+        --sat: env(safe-area-inset-top, 0px);
+        --sab: env(safe-area-inset-bottom, 0px);
+        --sal: env(safe-area-inset-left, 0px);
+        --sar: env(safe-area-inset-right, 0px);
+        --hud-rail-w: 56px;
+        --hud-bar-h: 56px;
+        --hud-active-w: 0px;
+        --hud-active-h: 0px;
+      }
+
+      * {
+        box-sizing: border-box;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        position: fixed;
+        background-color: #000;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: #ecf0f1;
+      }
+
+      /* Safe-Area Game Frame Container */
+      #game-frame {
+        position: fixed;
+        top: var(--sat);
+        left: var(--sal);
+        right: calc(var(--sar) + var(--hud-active-w));
+        bottom: calc(var(--sab) + var(--hud-active-h));
+        z-index: 1;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #000;
+        transition: right 0.25s cubic-bezier(0.16, 1, 0.3, 1), bottom 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      canvas.emscripten {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        touch-action: none;
+        outline: none;
+        cursor: default;
+      }
+
+      /* Loading Background & Error Screen */
+      div.background {
+        background-color: #121820;
+        border: 0px none;
+        display: flex;
+        height: 100%;
+        position: absolute;
+        width: 100%;
+        z-index: 100;
+        transition: opacity 0.4s ease;
+      }
+
+      div.background > div {
+        margin: auto;
+        text-align: center;
+      }
+
+      #box {
+        background: rgba(28, 38, 52, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 18px;
+        padding: 28px 32px;
+        min-width: 290px;
+        max-width: 90vw;
+        color: #ecf0f1;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      }
+
+      #box.error {
+        border-color: #e74c3c;
+      }
+
+      #title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        letter-spacing: -0.3px;
+      }
+
+      #message {
+        font-size: 14px;
+        color: #a0aec0;
+        line-height: 1.5;
+      }
+
+      #progress-bar {
+        width: 100%;
+        height: 8px;
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 4px;
+        margin-top: 18px;
+        overflow: hidden;
+      }
+
+      #progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #3498db, #2ecc71);
+        border-radius: 4px;
+        transition: width 0.2s ease;
+      }
+
+      /* Audio Unlock Overlay */
+      #audio-unlock-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 150;
+        display: none;
+        background: rgba(0, 0, 0, 0.72);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        text-align: center;
+        cursor: pointer;
+      }
+
+      #audio-unlock-overlay .prompt-card {
+        background: rgba(26, 36, 48, 0.92);
+        padding: 32px 36px;
+        border-radius: 20px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        max-width: 320px;
+      }
+
+      /* =====================================================================
+         Modern iOS Liquid Glass Ergonomics HUD
+         Apple HIG: min 44x44pt tap target
+         ===================================================================== */
+      #mobile-hud {
+        position: fixed;
+        z-index: 60;
+        background: rgba(20, 28, 38, 0.78);
+        backdrop-filter: blur(24px) saturate(190%);
+        -webkit-backdrop-filter: blur(24px) saturate(190%);
+        border: 0.5px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+        transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+      }
+
+      /* LANDSCAPE MODE: Vertical Docked Rail in right safe margin */
+      @media (orientation: landscape) {
+        #mobile-hud {
+          top: max(8px, var(--sat));
+          bottom: max(8px, var(--sab));
+          right: max(6px, var(--sar));
+          width: var(--hud-rail-w);
+          border-radius: 24px;
+          padding: 8px 5px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
+          overflow-y: auto;
+          overflow-x: hidden;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        #mobile-hud.hud-hidden {
+          transform: translateX(calc(100% + 20px));
+          opacity: 0;
+          pointer-events: none;
+        }
+
+        .hud-group {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 6px;
+          width: 100%;
+        }
+
+        .hud-divider {
+          width: 24px;
+          height: 1px;
+          background: rgba(255, 255, 255, 0.12);
+          margin: 4px 0;
+        }
+      }
+
+      /* PORTRAIT MODE: Horizontal Docked Bar above bottom home indicator */
+      @media (orientation: portrait) {
+        #mobile-hud {
+          left: max(8px, var(--sal));
+          right: max(8px, var(--sar));
+          bottom: calc(var(--sab) + 6px);
+          height: var(--hud-bar-h);
+          border-radius: 24px;
+          padding: 5px 8px;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+          overflow-x: auto;
+          overflow-y: hidden;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        #mobile-hud.hud-hidden {
+          transform: translateY(calc(100% + 20px));
+          opacity: 0;
+          pointer-events: none;
+        }
+
+        .hud-group {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .hud-divider {
+          width: 1px;
+          height: 24px;
+          background: rgba(255, 255, 255, 0.12);
+          margin: 0 4px;
+        }
+      }
+
+      /* HIG 44x44pt Touch Button */
+      .hud-btn {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        border-radius: 13px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 0.5px solid rgba(255, 255, 255, 0.16);
+        color: #f0f4f8;
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        outline: none;
+        touch-action: manipulation;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1;
+        transition: transform 0.12s ease, background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+        position: relative;
+        padding: 0;
+      }
+
+      .hud-btn:active {
+        transform: scale(0.92);
+        background: rgba(255, 255, 255, 0.22);
+      }
+
+      .hud-btn .btn-label {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        margin-top: 2px;
+        opacity: 0.8;
+      }
+
+      /* Active State Highlighting (iOS Tint) */
+      .hud-btn.active-blue {
+        background: #007aff !important;
+        border-color: #5ac8fa !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 12px rgba(0, 122, 255, 0.6);
+      }
+
+      .hud-btn.active-green {
+        background: #34c759 !important;
+        border-color: #30d158 !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 12px rgba(52, 199, 89, 0.6);
+      }
+
+      .hud-btn.active-amber {
+        background: #ff9500 !important;
+        border-color: #ffd60a !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 12px rgba(255, 149, 0, 0.6);
+      }
+
+      /* Floating Mini Toggle Button (When HUD is collapsed) */
+      #hud-toggle-btn {
+        position: fixed;
+        bottom: max(10px, var(--sab));
+        right: max(10px, var(--sar));
+        z-index: 55;
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        border-radius: 22px;
+        background: rgba(20, 28, 38, 0.78);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 0.5px solid rgba(255, 255, 255, 0.25);
+        color: #fff;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+      }
+
+      #hud-toggle-btn:active {
+        transform: scale(0.9);
+      }
+
+      #hud-toggle-btn.btn-hidden {
+        opacity: 0;
+        pointer-events: none;
+        transform: scale(0.6);
+      }
+
+      /* Long-Press Visual Ring (iOS Feedback) */
+      #touch-feedback-ring {
+        position: fixed;
+        width: 52px;
+        height: 52px;
+        pointer-events: none;
+        z-index: 120;
+        display: none;
+        transform: translate(-50%, -50%);
+      }
+
+      #touch-feedback-ring svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+      }
+
+      #touch-feedback-ring circle.bg {
+        fill: rgba(0, 0, 0, 0.3);
+        stroke: rgba(255, 255, 255, 0.25);
+        stroke-width: 3;
+      }
+
+      #touch-feedback-ring circle.progress {
+        fill: none;
+        stroke: #007aff;
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-dasharray: 126;
+        stroke-dashoffset: 126;
+      }
+
+      #touch-feedback-ring.animating circle.progress {
+        transition: stroke-dashoffset 0.42s cubic-bezier(0.2, 0.8, 0.2, 1);
+        stroke-dashoffset: 0;
+      }
+
+      #touch-feedback-ring.triggered {
+        transform: translate(-50%, -50%) scale(1.25);
+        opacity: 0;
+        transition: transform 0.22s ease-out, opacity 0.22s ease-out;
+      }
+
+      /* iOS Non-Blocking Toast Notification */
+      #ios-toast {
+        position: fixed;
+        top: max(12px, var(--sat));
+        left: 50%;
+        transform: translateX(-50%) translateY(-150%);
+        z-index: 250;
+        background: rgba(28, 38, 50, 0.92);
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border: 0.5px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
+        border-radius: 20px;
+        padding: 10px 18px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #fff;
+        font-size: 13.5px;
+        font-weight: 600;
+        pointer-events: none;
+        transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+        opacity: 0;
+      }
+
+      #ios-toast.toast-show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+
+      /* Hidden iOS Virtual Keyboard Proxy Input */
+      #mobile-keyboard-proxy {
+        position: fixed;
+        top: -100px;
+        left: -100px;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        pointer-events: none;
+        font-size: 16px; /* 16px prevents iOS Safari from auto-zooming viewport */
+        z-index: -1;
+      }
+
+      /* Savegames Modal (Safe-Area Aware) */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        background: rgba(0, 0, 0, 0.72);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: max(16px, var(--sat)) max(16px, var(--sar)) max(16px, var(--sab)) max(16px, var(--sal));
+      }
+
+      .modal-card {
+        background: rgba(28, 38, 52, 0.95);
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        color: #ecf0f1;
+        width: 100%;
+        max-width: 480px;
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65);
+      }
+
+      .modal-header {
+        padding: 16px 20px;
+        background: rgba(20, 28, 38, 0.85);
+        font-size: 17px;
+        font-weight: 700;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 0.5px solid rgba(255, 255, 255, 0.15);
+      }
+
+      .modal-close {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: #cbd5e1;
+        width: 32px;
+        height: 32px;
+        border-radius: 16px;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        outline: none;
+      }
+
+      .modal-close:active {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .modal-body {
+        padding: 18px 20px;
+        overflow-y: auto;
+        flex: 1;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .save-file-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(18, 26, 36, 0.85);
+        padding: 10px 14px;
+        margin-bottom: 8px;
+        border-radius: 10px;
+        font-size: 13.5px;
+        border: 0.5px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .save-file-name {
+        word-break: break-all;
+        font-family: ui-monospace, Menlo, Monaco, Consolas, monospace;
+      }
+
+      .save-download-btn {
+        background: #007aff;
+        color: white;
+        border: none;
+        padding: 8px 14px;
+        min-height: 36px;
+        border-radius: 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-left: 10px;
+        white-space: nowrap;
+      }
+
+      .save-download-btn:active {
+        background: #0056b3;
+      }
+
+      .import-box {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 0.5px solid rgba(255, 255, 255, 0.12);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Hidden Safe-Area Probe Element -->
+    <div id="safe-area-probe" style="position:fixed; top:env(safe-area-inset-top,0px); left:env(safe-area-inset-left,0px); right:env(safe-area-inset-right,0px); bottom:env(safe-area-inset-bottom,0px); pointer-events:none; visibility:hidden;"></div>
+
+    <!-- Hidden Native iOS Virtual Keyboard Proxy -->
+    <input id="mobile-keyboard-proxy" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" />
+
+    <!-- Long-Press Visual Feedback Ring (iOS Assistive Action) -->
+    <div id="touch-feedback-ring">
+      <svg viewBox="0 0 52 52">
+        <circle class="bg" cx="26" cy="26" r="20" />
+        <circle class="progress" cx="26" cy="26" r="20" />
+      </svg>
+    </div>
+
+    <!-- iOS Pill Toast Notification -->
+    <div id="ios-toast">
+      <span id="toast-icon">✨</span>
+      <span id="toast-msg">Notification</span>
+    </div>
+
+    <!-- Loading Background & Status -->
+    <div class="background" id="loading-bg">
+      <div id="box">
+        <div id="title">Loading OpenTTD ...</div>
+        <div id="message">Preparing engine and assets...</div>
+        <div id="progress-bar"><div id="progress-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- Web Audio Unlock Overlay (iOS Safari) -->
+    <div id="audio-unlock-overlay" onclick="unlockAudioAndStart()">
+      <div class="prompt-card">
+        <div style="font-size: 38px; margin-bottom: 12px;">🚂</div>
+        <h2 style="margin: 0 0 8px 0; font-size: 20px;">Tap to Play OpenTTD</h2>
+        <p style="margin: 0; color: #a0aec0; font-size: 14px;">Tap anywhere to enable sound & enter game</p>
+      </div>
+    </div>
+
+    <!-- Safe-Area Game Frame (Canvas Container) -->
+    <div id="game-frame">
+      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
+    </div>
+
+    <!-- Modern Docked Mobile Ergonomics HUD -->
+    <div id="mobile-hud">
+      <div class="hud-group">
+        <!-- Right-Click Mode Toggle -->
+        <button class="hud-btn" id="btn-rclick" title="Toggle Right-Click Mode" aria-label="Right Click">
+          <span>🖱️</span>
+          <span class="btn-label" id="lbl-rclick">R-Clk</span>
+        </button>
+        <!-- Ctrl Key Toggle -->
+        <button class="hud-btn" id="btn-ctrl" title="Toggle Ctrl Key" aria-label="Control">
+          <span style="font-size: 13px;">Ctrl</span>
+        </button>
+        <!-- Shift Key Toggle -->
+        <button class="hud-btn" id="btn-shift" title="Toggle Shift Key" aria-label="Shift">
+          <span style="font-size: 13px;">⇧</span>
+        </button>
+        <!-- Esc / Cancel Button -->
+        <button class="hud-btn" id="btn-esc" title="Escape / Cancel / Close Window" aria-label="Escape">
+          <span style="font-size: 13px;">⎋</span>
+          <span class="btn-label">Esc</span>
+        </button>
+      </div>
+
+      <div class="hud-divider"></div>
+
+      <div class="hud-group">
+        <!-- Zoom In -->
+        <button class="hud-btn" id="btn-zoom-in" title="Zoom In" aria-label="Zoom In">
+          <span style="font-size: 18px;">+</span>
+        </button>
+        <!-- Zoom Out -->
+        <button class="hud-btn" id="btn-zoom-out" title="Zoom Out" aria-label="Zoom Out">
+          <span style="font-size: 18px;">−</span>
+        </button>
+        <!-- Pause / Play -->
+        <button class="hud-btn" id="btn-pause" title="Pause Game" aria-label="Pause">
+          <span id="icon-pause" style="font-size: 13px;">⏸</span>
+        </button>
+        <!-- Fast-Forward Toggle -->
+        <button class="hud-btn" id="btn-fastfwd" title="Fast Forward (Tab)" aria-label="Fast Forward">
+          <span style="font-size: 13px;">⏩</span>
+        </button>
+      </div>
+
+      <div class="hud-divider"></div>
+
+      <div class="hud-group">
+        <!-- Close All Open Windows -->
+        <button class="hud-btn" id="btn-close-all" title="Close All Windows (Delete)" aria-label="Close All Windows">
+          <span style="font-size: 13px;">🧹</span>
+        </button>
+        <!-- Virtual On-Screen Keyboard -->
+        <button class="hud-btn" id="btn-keyboard" title="Open Virtual Keyboard" aria-label="Virtual Keyboard">
+          <span style="font-size: 13px;">⌨️</span>
+        </button>
+        <!-- Savegame Manager -->
+        <button class="hud-btn" id="btn-saves" title="Savegame Manager" aria-label="Savegames">
+          <span style="font-size: 13px;">💾</span>
+        </button>
+        <!-- Collapse / Dock HUD -->
+        <button class="hud-btn" id="btn-collapse" title="Collapse Controls" aria-label="Hide Controls">
+          <span style="font-size: 13px;">✕</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Floating Mini Toggle Button (shown when HUD is collapsed) -->
+    <button id="hud-toggle-btn" class="btn-hidden" title="Show Mobile Controls" aria-label="Show Mobile Controls">🎮</button>
+
+    <!-- Savegames Manager Modal -->
+    <div class="modal-backdrop" id="save-modal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <span>Manage Saved Games</span>
+          <button class="modal-close" onclick="closeSaveModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div style="margin-bottom: 14px; font-size: 13px; color: #a0aec0; line-height: 1.4;">
+            Savegames are stored securely in browser offline storage. Download them to your iOS Files / iCloud Drive for permanent backup.
+          </div>
+          <div id="save-files-list">
+            <em>No saved games found yet.</em>
+          </div>
+          <div class="import-box">
+            <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 8px;">Import .sav file from Files:</label>
+            <input type="file" id="save-file-input" accept=".sav" style="font-size: 13px;" onchange="importSavegameFile(this)">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      // PWA Service Worker Registration
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js').then((reg) => {
+            console.log('PWA Service Worker registered:', reg.scope);
+          }).catch((err) => {
+            console.log('PWA Service Worker registration failed:', err);
+          });
+        });
+      }
+
+      // iOS Non-blocking Toast Notification Helper
+      let toastTimer = null;
+      function showToast(msg, icon = 'ℹ️', duration = 2600) {
+        const toast = document.getElementById('ios-toast');
+        const msgEl = document.getElementById('toast-msg');
+        const iconEl = document.getElementById('toast-icon');
+        if (!toast || !msgEl) return;
+        msgEl.textContent = msg;
+        if (iconEl) iconEl.textContent = icon;
+        toast.classList.add('toast-show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove('toast-show');
+        }, duration);
+      }
+
+      // Audio unlocking for iOS Safari
+      let audioUnlocked = false;
+      function unlockAudioAndStart() {
+        audioUnlocked = true;
+        const overlay = document.getElementById('audio-unlock-overlay');
+        if (overlay) overlay.style.display = 'none';
+
+        // Unlock Web Audio context if initialized
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            const ctx = new AudioContext();
+            ctx.resume();
+          }
+          if (typeof Module !== 'undefined' && Module.SDL2 && Module.SDL2.audioContext) {
+            Module.SDL2.audioContext.resume();
+          }
+        } catch (e) {
+          console.warn('AudioContext unlock:', e);
+        }
+      }
+
+      // =====================================================================
+      // Ergonomics HUD & Layout Safe-Area Management
+      // =====================================================================
+      const hud = document.getElementById('mobile-hud');
+      const hudToggleBtn = document.getElementById('hud-toggle-btn');
+      const gameFrame = document.getElementById('game-frame');
+      let hudVisible = true;
+
+      function updateLayoutReservations() {
+        const isLandscape = window.matchMedia('(orientation: landscape)').matches;
+        const root = document.documentElement;
+
+        if (hudVisible) {
+          if (isLandscape) {
+            root.style.setProperty('--hud-active-w', 'var(--hud-rail-w)');
+            root.style.setProperty('--hud-active-h', '0px');
+          } else {
+            root.style.setProperty('--hud-active-w', '0px');
+            root.style.setProperty('--hud-active-h', 'var(--hud-bar-h)');
+          }
+        } else {
+          root.style.setProperty('--hud-active-w', '0px');
+          root.style.setProperty('--hud-active-h', '0px');
+        }
+
+        // Trigger SDL2 canvas resize
+        setTimeout(() => {
+          window.dispatchEvent(new Event('resize'));
+        }, 120);
+      }
+
+      function toggleHUD(show) {
+        hudVisible = typeof show === 'boolean' ? show : !hudVisible;
+        if (hudVisible) {
+          hud.classList.remove('hud-hidden');
+          hudToggleBtn.classList.add('btn-hidden');
+        } else {
+          hud.classList.add('hud-hidden');
+          hudToggleBtn.classList.remove('btn-hidden');
+        }
+        updateLayoutReservations();
+      }
+
+      document.getElementById('btn-collapse').addEventListener('click', () => toggleHUD(false));
+      hudToggleBtn.addEventListener('click', () => toggleHUD(true));
+      window.addEventListener('orientationchange', () => setTimeout(updateLayoutReservations, 150));
+      window.addEventListener('resize', () => updateLayoutReservations());
+      updateLayoutReservations();
+
+      // =====================================================================
+      // Intercept window.innerWidth & innerHeight for Safe-Area SDL2 Resolution
+      // =====================================================================
+      function getGameFrameDimensions() {
+        if (gameFrame) {
+          const rect = gameFrame.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) {
+            return { width: Math.round(rect.width), height: Math.round(rect.height) };
+          }
+        }
+        return {
+          width: document.documentElement.clientWidth || 874,
+          height: document.documentElement.clientHeight || 402
+        };
+      }
+
+      try {
+        Object.defineProperty(window, 'innerWidth', {
+          get: function() {
+            return getGameFrameDimensions().width;
+          },
+          configurable: true
+        });
+        Object.defineProperty(window, 'innerHeight', {
+          get: function() {
+            return getGameFrameDimensions().height;
+          },
+          configurable: true
+        });
+      } catch (e) {
+        console.warn('Safe-area innerWidth override:', e);
+      }
+
+      // =====================================================================
+      // Virtual Keys, Modifiers & Shortcuts
+      // =====================================================================
+      let rClickMode = false;
+      let ctrlActive = false;
+      let shiftActive = false;
+      let fastFwdActive = false;
+      let isPaused = false;
+
+      // Right-Click Mode
+      const rClickBtn = document.getElementById('btn-rclick');
+      rClickBtn.addEventListener('click', () => {
+        rClickMode = !rClickMode;
+        rClickBtn.classList.toggle('active-blue', rClickMode);
+        showToast(rClickMode ? 'Right-Click Mode: ON' : 'Right-Click Mode: OFF', rClickMode ? '🖱️' : '👆', 1500);
+      });
+
+      // Ctrl Modifier
+      const ctrlBtn = document.getElementById('btn-ctrl');
+      ctrlBtn.addEventListener('click', () => {
+        ctrlActive = !ctrlActive;
+        ctrlBtn.classList.toggle('active-green', ctrlActive);
+        dispatchKeyEvent(ctrlActive ? 'keydown' : 'keyup', 'Control', 'ControlLeft', 17);
+      });
+
+      // Shift Modifier
+      const shiftBtn = document.getElementById('btn-shift');
+      shiftBtn.addEventListener('click', () => {
+        shiftActive = !shiftActive;
+        shiftBtn.classList.toggle('active-green', shiftActive);
+        dispatchKeyEvent(shiftActive ? 'keydown' : 'keyup', 'Shift', 'ShiftLeft', 16);
+      });
+
+      // Esc / Cancel Key
+      const escBtn = document.getElementById('btn-esc');
+      escBtn.addEventListener('click', () => {
+        dispatchKeyEvent('keydown', 'Escape', 'Escape', 27);
+        setTimeout(() => dispatchKeyEvent('keyup', 'Escape', 'Escape', 27), 40);
+        showToast('Cancelled / Esc', '⎋', 1000);
+      });
+
+      // Pause / Play
+      const pauseBtn = document.getElementById('btn-pause');
+      const iconPause = document.getElementById('icon-pause');
+      pauseBtn.addEventListener('click', () => {
+        isPaused = !isPaused;
+        iconPause.textContent = isPaused ? '▶' : '⏸';
+        pauseBtn.classList.toggle('active-amber', isPaused);
+        dispatchKeyEvent('keydown', 'Pause', 'Pause', 19);
+        setTimeout(() => dispatchKeyEvent('keyup', 'Pause', 'Pause', 19), 40);
+      });
+
+      // Fast-Forward Toggle (Tab key in OpenTTD)
+      const fastFwdBtn = document.getElementById('btn-fastfwd');
+      fastFwdBtn.addEventListener('click', () => {
+        fastFwdActive = !fastFwdActive;
+        fastFwdBtn.classList.toggle('active-blue', fastFwdActive);
+        dispatchKeyEvent(fastFwdActive ? 'keydown' : 'keyup', 'Tab', 'Tab', 9);
+        showToast(fastFwdActive ? 'Fast Forward ON' : 'Fast Forward OFF', '⏩', 1200);
+      });
+
+      // Close All Windows (Delete key in OpenTTD)
+      const closeAllBtn = document.getElementById('btn-close-all');
+      closeAllBtn.addEventListener('click', () => {
+        dispatchKeyEvent('keydown', 'Delete', 'Delete', 46);
+        setTimeout(() => dispatchKeyEvent('keyup', 'Delete', 'Delete', 46), 40);
+        showToast('Closed All Windows', '🧹', 1200);
+      });
+
+      // Virtual Keyboard Support
+      const kbBtn = document.getElementById('btn-keyboard');
+      const kbProxy = document.getElementById('mobile-keyboard-proxy');
+      kbBtn.addEventListener('click', () => {
+        kbProxy.focus();
+        showToast('Keyboard active — tap Return when done', '⌨️', 2000);
+      });
+
+      kbProxy.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          dispatchKeyEvent('keydown', 'Enter', 'Enter', 13);
+          setTimeout(() => dispatchKeyEvent('keyup', 'Enter', 'Enter', 13), 30);
+          kbProxy.blur();
+          return;
+        }
+        if (e.key === 'Backspace') {
+          dispatchKeyEvent('keydown', 'Backspace', 'Backspace', 8);
+          setTimeout(() => dispatchKeyEvent('keyup', 'Backspace', 'Backspace', 8), 30);
+          return;
+        }
+        if (e.key && e.key.length === 1) {
+          dispatchTextInput(e.key);
+        }
+      });
+
+      kbProxy.addEventListener('input', (e) => {
+        if (e.data) {
+          dispatchTextInput(e.data);
+        }
+      });
+
+      function dispatchTextInput(text) {
+        for (let i = 0; i < text.length; i++) {
+          const char = text[i];
+          const code = char.charCodeAt(0);
+          dispatchKeyEvent('keydown', char, 'Key' + char.toUpperCase(), code);
+          dispatchKeyEvent('keypress', char, 'Key' + char.toUpperCase(), code);
+          dispatchKeyEvent('keyup', char, 'Key' + char.toUpperCase(), code);
+        }
+      }
+
+      function simulateWheel(delta, clientX, clientY) {
+        const canvas = document.getElementById('canvas');
+        const rect = canvas.getBoundingClientRect();
+        const posX = typeof clientX === 'number' ? clientX : rect.left + rect.width / 2;
+        const posY = typeof clientY === 'number' ? clientY : rect.top + rect.height / 2;
+
+        // Position mouse at target before zoom
+        const moveEv = new MouseEvent('mousemove', {
+          clientX: posX,
+          clientY: posY,
+          bubbles: true,
+          cancelable: true
+        });
+        canvas.dispatchEvent(moveEv);
+
+        const ev = new WheelEvent('wheel', {
+          deltaY: delta,
+          clientX: posX,
+          clientY: posY,
+          bubbles: true,
+          cancelable: true
+        });
+        canvas.dispatchEvent(ev);
+      }
+
+      document.getElementById('btn-zoom-in').addEventListener('click', () => simulateWheel(-120));
+      document.getElementById('btn-zoom-out').addEventListener('click', () => simulateWheel(120));
+
+      function dispatchKeyEvent(type, key, code, keyCode) {
+        const ev = new KeyboardEvent(type, {
+          key: key,
+          code: code,
+          keyCode: keyCode,
+          which: keyCode,
+          bubbles: true,
+          cancelable: true
+        });
+        window.dispatchEvent(ev);
+        document.dispatchEvent(ev);
+        const canvas = document.getElementById('canvas');
+        if (canvas) canvas.dispatchEvent(ev);
+      }
+
+      // =====================================================================
+      // Savegames Management Modal
+      // =====================================================================
+      const saveModal = document.getElementById('save-modal');
+      document.getElementById('btn-saves').addEventListener('click', () => {
+        openSaveModal();
+      });
+
+      function openSaveModal() {
+        saveModal.style.display = 'flex';
+        refreshSaveList();
+      }
+
+      function closeSaveModal() {
+        saveModal.style.display = 'none';
+      }
+
+      function refreshSaveList() {
+        const listContainer = document.getElementById('save-files-list');
+        const saveDir = '/home/web_user/.openttd/save';
+        try {
+          if (typeof FS === 'undefined') {
+            listContainer.innerHTML = '<em>Engine filesystem not initialized yet.</em>';
+            return;
+          }
+          const files = FS.readdir(saveDir).filter(f => f !== '.' && f !== '..' && f.endsWith('.sav'));
+          if (files.length === 0) {
+            listContainer.innerHTML = '<em>No saved games found. Save your game inside OpenTTD first!</em>';
+            return;
+          }
+          let html = '';
+          files.forEach(f => {
+            html += `
+              <div class="save-file-item">
+                <span class="save-file-name">${f}</span>
+                <button class="save-download-btn" onclick="downloadSaveFile('${f}')">⬇️ Download</button>
+              </div>`;
+          });
+          listContainer.innerHTML = html;
+        } catch (e) {
+          listContainer.innerHTML = `<em>Unable to read saves: ${e.message}</em>`;
+        }
+      }
+
+      function downloadSaveFile(filename) {
+        const fullPath = `/home/web_user/.openttd/save/${filename}`;
+        try {
+          const data = FS.readFile(fullPath);
+          const blob = new Blob([data], { type: 'application/octet-stream' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, 100);
+          showToast(`Downloaded "${filename}"`, '💾', 2000);
+        } catch (e) {
+          showToast('Failed to download save: ' + e.message, '⚠️', 3000);
+        }
+      }
+
+      function importSavegameFile(input) {
+        if (!input.files || input.files.length === 0) return;
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            const data = new Uint8Array(e.target.result);
+            const targetDir = '/home/web_user/.openttd/save';
+            try { FS.mkdir(targetDir); } catch(err) {}
+            FS.writeFile(`${targetDir}/${file.name}`, data);
+            if (window.openttd_syncfs) {
+              window.openttd_syncfs(() => {
+                showToast(`Imported "${file.name}"! Available in Load Game.`, '✅', 3000);
+                refreshSaveList();
+              });
+            } else {
+              showToast(`Imported "${file.name}"!`, '✅', 2500);
+              refreshSaveList();
+            }
+          } catch(err) {
+            showToast('Import failed: ' + err.message, '⚠️', 3000);
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      }
+
+      // =====================================================================
+      // Robust Touch & Gesture Translation Layer for iOS
+      // Fixes: 4a (release coords), 4b/c (long-press conflict),
+      //        4d/e (pinch midpoint), 4f (visual ring), 4g (safe pan)
+      // =====================================================================
+      (function setupTouchGestures() {
+        const canvas = document.getElementById('canvas');
+        const feedbackRing = document.getElementById('touch-feedback-ring');
+
+        let initialPinchDistance = 0;
+        let lastMidX = 0;
+        let lastMidY = 0;
+        let isTwoFingerDragging = false;
+        let isTwoFingerActive = false;
+
+        let longPressTimer = null;
+        let longPressTriggered = false;
+        let touchStartPos = { x: 0, y: 0 };
+
+        function getDistance(t1, t2) {
+          const dx = t1.clientX - t2.clientX;
+          const dy = t1.clientY - t2.clientY;
+          return Math.hypot(dx, dy);
+        }
+
+        function showRing(x, y) {
+          if (!feedbackRing) return;
+          feedbackRing.style.left = x + 'px';
+          feedbackRing.style.top = y + 'px';
+          feedbackRing.style.display = 'block';
+          feedbackRing.className = '';
+          void feedbackRing.offsetWidth; // Reflow
+          feedbackRing.className = 'animating';
+        }
+
+        function triggerRingPop() {
+          if (!feedbackRing) return;
+          feedbackRing.className = 'triggered';
+          setTimeout(() => {
+            feedbackRing.style.display = 'none';
+            feedbackRing.className = '';
+          }, 240);
+        }
+
+        function hideRing() {
+          if (!feedbackRing) return;
+          feedbackRing.style.display = 'none';
+          feedbackRing.className = '';
+        }
+
+        canvas.addEventListener('touchstart', (e) => {
+          if (!audioUnlocked) {
+            unlockAudioAndStart();
+          }
+
+          if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            touchStartPos = { x: touch.clientX, y: touch.clientY };
+            longPressTriggered = false;
+
+            if (rClickMode) {
+              // Right-Click Mode active: execute right-click immediately
+              e.preventDefault();
+              triggerMouseEvent('mousemove', touch.clientX, touch.clientY, 0);
+              triggerMouseEvent('mousedown', touch.clientX, touch.clientY, 2);
+            } else {
+              // Start long-press detection with visual feedback ring
+              clearTimeout(longPressTimer);
+              showRing(touch.clientX, touch.clientY);
+
+              longPressTimer = setTimeout(() => {
+                longPressTriggered = true;
+                triggerRingPop();
+
+                // Disarm trailing left-click and send right click
+                triggerMouseEvent('mousedown', touch.clientX, touch.clientY, 2);
+                setTimeout(() => {
+                  triggerMouseEvent('mouseup', touch.clientX, touch.clientY, 2);
+                }, 40);
+              }, 420);
+            }
+          } else if (e.touches.length === 2) {
+            clearTimeout(longPressTimer);
+            hideRing();
+            longPressTriggered = false;
+
+            const t0 = e.touches[0];
+            const t1 = e.touches[1];
+            initialPinchDistance = getDistance(t0, t1);
+            lastMidX = (t0.clientX + t1.clientX) / 2;
+            lastMidY = (t0.clientY + t1.clientY) / 2;
+            isTwoFingerActive = true;
+            isTwoFingerDragging = false;
+          }
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', (e) => {
+          if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            const dist = Math.hypot(touch.clientX - touchStartPos.x, touch.clientY - touchStartPos.y);
+            if (dist > 8) {
+              clearTimeout(longPressTimer);
+              hideRing();
+            }
+
+            if (rClickMode) {
+              e.preventDefault();
+              triggerMouseEvent('mousemove', touch.clientX, touch.clientY, 2);
+            }
+          } else if (e.touches.length === 2) {
+            e.preventDefault();
+            clearTimeout(longPressTimer);
+            hideRing();
+
+            const t0 = e.touches[0];
+            const t1 = e.touches[1];
+            const currentDist = getDistance(t0, t1);
+            const midX = (t0.clientX + t1.clientX) / 2;
+            const midY = (t0.clientY + t1.clientY) / 2;
+
+            // Pinch-to-zoom anchored at touch midpoint
+            const distDiff = currentDist - initialPinchDistance;
+            if (Math.abs(distDiff) > 28) {
+              if (distDiff > 0) {
+                simulateWheel(-120, midX, midY); // Zoom In
+              } else {
+                simulateWheel(120, midX, midY);  // Zoom Out
+              }
+              initialPinchDistance = currentDist;
+            }
+
+            // Engage map pan after passing deadzone threshold
+            if (!isTwoFingerDragging && Math.hypot(midX - lastMidX, midY - lastMidY) > 5) {
+              isTwoFingerDragging = true;
+              triggerMouseEvent('mousedown', midX, midY, 2);
+            }
+
+            if (isTwoFingerDragging) {
+              triggerMouseEvent('mousemove', midX, midY, 2);
+            }
+
+            lastMidX = midX;
+            lastMidY = midY;
+          }
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', (e) => {
+          clearTimeout(longPressTimer);
+          hideRing();
+
+          if (isTwoFingerDragging) {
+            isTwoFingerDragging = false;
+            triggerMouseEvent('mouseup', lastMidX, lastMidY, 2);
+          }
+          if (e.touches.length < 2) {
+            isTwoFingerActive = false;
+          }
+
+          if (rClickMode && e.touches.length === 0) {
+            e.preventDefault();
+            const touch = e.changedTouches[0] || { clientX: lastMidX, clientY: lastMidY };
+            triggerMouseEvent('mouseup', touch.clientX, touch.clientY, 2);
+          } else if (longPressTriggered) {
+            // Swallow trailing left-click after successful long-press
+            e.preventDefault();
+            longPressTriggered = false;
+          }
+        }, { passive: false });
+
+        canvas.addEventListener('touchcancel', () => {
+          clearTimeout(longPressTimer);
+          hideRing();
+          if (isTwoFingerDragging) {
+            isTwoFingerDragging = false;
+            triggerMouseEvent('mouseup', lastMidX, lastMidY, 2);
+          }
+          isTwoFingerActive = false;
+          longPressTriggered = false;
+        });
+
+        function triggerMouseEvent(type, clientX, clientY, button) {
+          const ev = new MouseEvent(type, {
+            clientX: clientX,
+            clientY: clientY,
+            button: button,
+            buttons: button === 2 ? 2 : 1,
+            bubbles: true,
+            cancelable: true,
+            ctrlKey: ctrlActive,
+            shiftKey: shiftActive
+          });
+          canvas.dispatchEvent(ev);
+        }
+      })();
+
+      // =====================================================================
+      // Emscripten Module Definition
+      // =====================================================================
+      var Module = {
+        preRun: [],
+        postRun: [
+          function() {
+            // Hide loading background when game loop starts
+            const bg = document.getElementById('loading-bg');
+            if (bg) {
+              bg.style.opacity = '0';
+              setTimeout(() => { bg.style.display = 'none'; }, 400);
+            }
+            updateLayoutReservations();
+          }
+        ],
+        arguments: [],
+        totalDependencies: 42,
+        doneDependencies: 0,
+        lastDependencies: 1,
+
+        print: function(text) {
+          console.log(text);
+        },
+
+        printErr: function(text) {
+          console.error(text);
+        },
+
+        canvas: (function() {
+          var c = document.getElementById('canvas');
+          c.addEventListener("webglcontextlost", function(e) {
+            alert('WebGL context lost. Please reload the page.');
+            e.preventDefault();
+          }, false);
+          return c;
+        })(),
+
+        setStatus: function(text) {
+          var m = text.match(/^([^(]+)\((\d+(\.\d+)?)\/(\d+)\)$/);
+          if (m) {
+            text = "(" + m[2] + " / " + m[4] + ") " + m[1];
+            const pct = Math.round((parseFloat(m[2]) / parseFloat(m[4])) * 100);
+            document.getElementById("progress-fill").style.width = pct + "%";
+          }
+          document.getElementById("message").innerHTML = text;
+        },
+
+        monitorRunDependencies: function(left) {
+          if (left < Module.lastDependencies) {
+            Module.doneDependencies += 1;
+          }
+          Module.lastDependencies = left;
+          var total = Module.totalDependencies;
+          var doing = Module.doneDependencies + 1;
+          if (doing > total) doing = total;
+          var pct = Math.round((doing / total) * 100);
+          document.getElementById("title").innerHTML = "(" + doing + " / " + total + ") Loading ...";
+          document.getElementById("message").innerHTML = "Preparing OpenTTD engine & assets...";
+          document.getElementById("progress-fill").style.width = pct + "%";
+        },
+
+        onBootstrap: function(current, total) {
+          document.getElementById("title").innerHTML = "Downloading Base Graphics";
+          document.getElementById("message").innerHTML = "Downloading OpenGFX (" + Math.round(current / 1024) + " KB / " + Math.round(total / 1024) + " KB)...";
+        },
+
+        onBootstrapFailed: function() {
+          document.getElementById("box").className = "error";
+          document.getElementById("title").innerHTML = "Missing Base Graphics";
+          document.getElementById("message").innerHTML = "Failed to download base graphics. Check connection and reload.";
+        },
+
+        onBootstrapReload: function() {
+          document.getElementById("title").innerHTML = "Base Graphics Ready";
+          document.getElementById("message").innerHTML = "Graphics downloaded. Reloading OpenTTD...";
+        },
+
+        onExit: function() {
+          document.getElementById("canvas").style.display = "none";
+          document.getElementById("loading-bg").style.display = "flex";
+          document.getElementById("loading-bg").style.opacity = "1";
+          document.getElementById("title").innerHTML = "Game Exited";
+          document.getElementById("message").innerHTML = "Thank you for playing OpenTTD!<br/><br/>Reload browser to restart.";
+        },
+
+        onAbort: function() {
+          document.getElementById("canvas").style.display = "none";
+          document.getElementById("loading-bg").style.display = "flex";
+          document.getElementById("loading-bg").style.opacity = "1";
+          document.getElementById("box").className = "error";
+          document.getElementById("title").innerHTML = "Game Stopped";
+          document.getElementById("message").innerHTML = "OpenTTD encountered an error or stopped.<br/><br/>Please reload to restart.";
+        },
+
+        onWarningFs: function() {
+          console.warn("Storage warning: savegames are persisted in browser IndexedDB.");
+        }
+      };
+
+      window.onerror = function(err) {
+        console.error("OpenTTD Web:", err);
+      };
+    </script>
+    <script async src="openttd.js"></script>
+  </body>
+</html>
