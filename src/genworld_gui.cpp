@@ -346,7 +346,7 @@ static void LandscapeGenerationCallback(Window *w, bool confirmed)
 }
 
 #ifdef __EMSCRIPTEN__
-static constexpr uint MAX_GENWORLD_MAP_SIZE_BITS = 9; ///< Maximum map size is 512 on Web / mobile devices (exclude 1024, 2048, and 4096).
+static constexpr uint MAX_GENWORLD_MAP_SIZE_BITS = 8; ///< Maximum map size is 256 on Web / mobile devices (exclude 512, 1024, 2048, and 4096).
 #else
 static constexpr uint MAX_GENWORLD_MAP_SIZE_BITS = MAX_MAP_SIZE_BITS;
 #endif
@@ -1487,10 +1487,6 @@ void ShowGenerateWorldProgress()
 {
 	if (BringWindowToFrontById(WindowClass::ModalProgress, 0)) return;
 	new GenerateProgressWindow();
-#ifdef __EMSCRIPTEN__
-	SetWindowDirty(WindowClass::ModalProgress, 0);
-	VideoDriver::GetInstance()->GameLoopPause();
-#endif
 }
 
 static void _SetGeneratingWorldProgress(GenWorldProgress cls, uint progress, uint total)
@@ -1544,18 +1540,7 @@ static void _SetGeneratingWorldProgress(GenWorldProgress cls, uint progress, uin
 
 	SetWindowDirty(WindowClass::ModalProgress, 0);
 
-#ifdef __EMSCRIPTEN__
-	static uint last_percent = 101;
-	static auto last_draw = std::chrono::steady_clock::now();
-	auto now = std::chrono::steady_clock::now();
-	if (GenWorldStatus::percent != last_percent || now - last_draw >= std::chrono::milliseconds(50)) {
-		last_percent = GenWorldStatus::percent;
-		last_draw = now;
-		VideoDriver::GetInstance()->GameLoopPause();
-	}
-#else
 	VideoDriver::GetInstance()->GameLoopPause();
-#endif
 }
 
 /**

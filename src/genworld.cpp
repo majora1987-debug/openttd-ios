@@ -170,8 +170,15 @@ static void _GenerateWorld()
 		if (GenWorldInfo::mode != GWM_EMPTY) {
 			uint i;
 
-			SetGeneratingWorldProgress(GenWorldProgress::RunTileLoop, 0x500);
-			for (i = 0; i < 0x500; i++) {
+#ifdef __EMSCRIPTEN__
+			static constexpr uint TILE_LOOP_COUNT = 0x80;
+			static constexpr uint GS_LOOP_COUNT = 250;
+#else
+			static constexpr uint TILE_LOOP_COUNT = 0x500;
+			static constexpr uint GS_LOOP_COUNT = 2500;
+#endif
+			SetGeneratingWorldProgress(GenWorldProgress::RunTileLoop, TILE_LOOP_COUNT);
+			for (i = 0; i < TILE_LOOP_COUNT; i++) {
 				RunTileLoop();
 				TimerGameTick::counter++;
 				IncreaseGeneratingWorldProgress(GenWorldProgress::RunTileLoop);
@@ -179,9 +186,9 @@ static void _GenerateWorld()
 
 			if (_game_mode != GameMode::Editor) {
 				if (Game::GetInstance() != nullptr) {
-					SetGeneratingWorldProgress(GenWorldProgress::GameScript, 2500);
+					SetGeneratingWorldProgress(GenWorldProgress::GameScript, GS_LOOP_COUNT);
 					_generating_world = true;
-					for (i = 0; i < 2500; i++) {
+					for (i = 0; i < GS_LOOP_COUNT; i++) {
 						Game::GameLoop();
 						IncreaseGeneratingWorldProgress(GenWorldProgress::GameScript);
 						if (Game::GetInstance()->IsSleeping()) break;
