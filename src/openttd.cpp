@@ -1153,6 +1153,7 @@ void SwitchToMode(SwitchMode new_mode)
 				ShowErrorMessage(GetEncodedString(STR_WARNING_FALLBACK_SOUNDSET), {}, WarningLevel::Critical);
 				BaseSounds::ini_set = BaseSounds::GetUsedSet()->name;
 			}
+#ifndef __EMSCRIPTEN__
 			if (_settings_client.network.participate_survey == ParticipateSurvey::Ask) {
 				/* No matter how often you go back to the main menu, only ask the first time. */
 				static bool asked_once = false;
@@ -1161,6 +1162,9 @@ void SwitchToMode(SwitchMode new_mode)
 					ShowNetworkAskSurvey();
 				}
 			}
+#else
+			_settings_client.network.participate_survey = ParticipateSurvey::No;
+#endif
 
 			UpdateSocialIntegration(GameMode::Menu);
 			break;

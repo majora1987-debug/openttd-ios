@@ -962,6 +962,9 @@ static WindowDesc _network_game_window_desc(
 /** Show the server list window. */
 void ShowNetworkGameWindow()
 {
+#ifdef __EMSCRIPTEN__
+	return;
+#endif
 	static bool first = true;
 	CloseWindowById(WindowClass::Network, NetworkWindowNumber::StartServer);
 
@@ -2447,6 +2450,9 @@ static WindowDesc _network_ask_survey_desc(
  */
 void ShowNetworkAskSurvey()
 {
+#ifdef __EMSCRIPTEN__
+	return;
+#endif
 	/* If we can't send a survey, don't ask the question. */
 	if constexpr (!NetworkSurveyHandler::IsSurveyPossible()) return;
 

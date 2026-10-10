@@ -1130,6 +1130,9 @@ static WindowDesc _network_content_list_desc(
  */
 void ShowNetworkContentListWindow(ContentVector *cv, ContentType type1, ContentType type2)
 {
+#ifdef __EMSCRIPTEN__
+	return;
+#endif
 #if defined(WITH_ZLIB)
 	ContentTypes types{};
 	_network_content_client.Clear();
