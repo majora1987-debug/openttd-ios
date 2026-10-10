@@ -1,4 +1,4 @@
-const CACHE_NAME = 'openttd-v6-clean-menu';
+const CACHE_NAME = 'openttd-v7-landscape-menu-fix';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
