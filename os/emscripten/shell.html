@@ -16,6 +16,7 @@
         --sab: env(safe-area-inset-bottom, 0px);
         --sal: env(safe-area-inset-left, 0px);
         --sar: env(safe-area-inset-right, 0px);
+        --game-top-inset: var(--sat);
         --hud-rail-w: 110px;
         --hud-bar-h: 56px;
         --hud-active-w: 0px;
@@ -45,7 +46,7 @@
       /* Safe-Area Game Frame Container */
       #game-frame {
         position: fixed;
-        top: var(--sat);
+        top: var(--game-top-inset, var(--sat));
         left: var(--sal);
         right: calc(var(--sar) + var(--hud-active-w));
         bottom: calc(var(--sab) + var(--hud-active-h));
@@ -55,6 +56,24 @@
         align-items: center;
         justify-content: center;
         background-color: #000;
+      }
+
+      /* Top-Edge Tap Cushion: Extends tap target for landscape top toolbar */
+      #top-touch-cushion {
+        position: fixed;
+        top: 0;
+        left: var(--sal);
+        right: calc(var(--sar) + var(--hud-active-w));
+        height: var(--game-top-inset, 0px);
+        z-index: 50;
+        touch-action: none;
+        display: none;
+      }
+
+      @media (orientation: landscape) {
+        #top-touch-cushion {
+          display: block;
+        }
       }
 
       canvas.emscripten {
@@ -599,6 +618,9 @@
       </div>
     </div>
 
+    <!-- Top-Edge Tap Cushion (Landscape Toolbar Hit Area Expansion) -->
+    <div id="top-touch-cushion"></div>
+
     <!-- Safe-Area Game Frame (Canvas Container) -->
     <div id="game-frame">
       <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
@@ -805,17 +827,27 @@
         const isLandscape = window.matchMedia('(orientation: landscape)').matches;
         const root = document.documentElement;
 
-        if (hudVisible) {
-          if (isLandscape) {
+        if (isLandscape) {
+          // In landscape, iOS reports env(safe-area-inset-top) as 0px because the notch is on the side.
+          // However, iOS reserves the top 16-20px for system edge gestures (Notification Center, Control Center, Safari chrome).
+          // Providing a minimum 20px clearance keeps the OpenTTD toolbar fully responsive and clear of the bezel.
+          root.style.setProperty('--game-top-inset', 'max(var(--sat), 20px)');
+          if (hudVisible) {
             root.style.setProperty('--hud-active-w', 'calc(var(--hud-rail-w) + max(8px, var(--sar)) - var(--sar) + 6px)');
             root.style.setProperty('--hud-active-h', '0px');
           } else {
             root.style.setProperty('--hud-active-w', '0px');
-            root.style.setProperty('--hud-active-h', 'calc(var(--hud-bar-h) + 12px)');
+            root.style.setProperty('--hud-active-h', '0px');
           }
         } else {
-          root.style.setProperty('--hud-active-w', '0px');
-          root.style.setProperty('--hud-active-h', '0px');
+          root.style.setProperty('--game-top-inset', 'var(--sat)');
+          if (hudVisible) {
+            root.style.setProperty('--hud-active-w', '0px');
+            root.style.setProperty('--hud-active-h', 'calc(var(--hud-bar-h) + 12px)');
+          } else {
+            root.style.setProperty('--hud-active-w', '0px');
+            root.style.setProperty('--hud-active-h', '0px');
+          }
         }
 
         // Check if layout update altered game dimensions on the next animation frame
@@ -1137,6 +1169,7 @@
         let isTwoFingerDragging = false;
         let isTwoFingerActive = false;
 
+        let ringTimer = null;
         let longPressTimer = null;
         let longPressTriggered = false;
         let touchStartPos = { x: 0, y: 0 };
@@ -1188,9 +1221,12 @@
               triggerMouseEvent('mousemove', touch.clientX, touch.clientY, 0);
               triggerMouseEvent('mousedown', touch.clientX, touch.clientY, 2);
             } else {
-              // Start long-press detection with visual feedback ring
+              // Start long-press detection with delayed visual feedback ring (only on hold > 120ms)
               clearTimeout(longPressTimer);
-              showRing(touch.clientX, touch.clientY);
+              clearTimeout(ringTimer);
+              ringTimer = setTimeout(() => {
+                showRing(touch.clientX, touch.clientY);
+              }, 120);
 
               longPressTimer = setTimeout(() => {
                 longPressTriggered = true;
@@ -1205,6 +1241,7 @@
             }
           } else if (e.touches.length === 2) {
             clearTimeout(longPressTimer);
+            clearTimeout(ringTimer);
             hideRing();
             longPressTriggered = false;
 
@@ -1224,6 +1261,7 @@
             const dist = Math.hypot(touch.clientX - touchStartPos.x, touch.clientY - touchStartPos.y);
             if (dist > 8) {
               clearTimeout(longPressTimer);
+              clearTimeout(ringTimer);
               hideRing();
             }
 
@@ -1234,6 +1272,7 @@
           } else if (e.touches.length === 2) {
             e.preventDefault();
             clearTimeout(longPressTimer);
+            clearTimeout(ringTimer);
             hideRing();
 
             const t0 = e.touches[0];
@@ -1270,6 +1309,7 @@
 
         canvas.addEventListener('touchend', (e) => {
           clearTimeout(longPressTimer);
+          clearTimeout(ringTimer);
           hideRing();
 
           if (isTwoFingerDragging) {
@@ -1293,6 +1333,7 @@
 
         canvas.addEventListener('touchcancel', () => {
           clearTimeout(longPressTimer);
+          clearTimeout(ringTimer);
           hideRing();
           if (isTwoFingerDragging) {
             isTwoFingerDragging = false;
@@ -1301,6 +1342,51 @@
           isTwoFingerActive = false;
           longPressTriggered = false;
         });
+
+        // =====================================================================
+        // Top-Edge Tap Cushion: Extends tap target for toolbar in landscape
+        // =====================================================================
+        const topCushion = document.getElementById('top-touch-cushion');
+        if (topCushion) {
+          topCushion.addEventListener('touchstart', (e) => {
+            if (!audioUnlocked) {
+              unlockAudioAndStart();
+            }
+            if (e.touches.length === 1) {
+              e.preventDefault();
+              const touch = e.touches[0];
+              const rect = canvas.getBoundingClientRect();
+              const targetY = rect.top + 6; // Route tap into top toolbar directly underneath
+
+              if (rClickMode) {
+                triggerMouseEvent('mousemove', touch.clientX, targetY, 0);
+                triggerMouseEvent('mousedown', touch.clientX, targetY, 2);
+              } else {
+                triggerMouseEvent('mousemove', touch.clientX, targetY, 0);
+                triggerMouseEvent('mousedown', touch.clientX, targetY, 0);
+              }
+            }
+          }, { passive: false });
+
+          topCushion.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            const touch = e.changedTouches[0];
+            const rect = canvas.getBoundingClientRect();
+            const targetY = rect.top + 6;
+            if (rClickMode) {
+              triggerMouseEvent('mouseup', touch.clientX, targetY, 2);
+            } else {
+              triggerMouseEvent('mouseup', touch.clientX, targetY, 0);
+            }
+          }, { passive: false });
+
+          topCushion.addEventListener('touchcancel', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const targetY = rect.top + 6;
+            const touch = e.changedTouches[0] || { clientX: lastMidX };
+            triggerMouseEvent('mouseup', touch.clientX, targetY, 0);
+          });
+        }
 
         function triggerMouseEvent(type, clientX, clientY, button) {
           const ev = new MouseEvent(type, {
