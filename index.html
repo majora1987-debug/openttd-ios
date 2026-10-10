@@ -16,7 +16,7 @@
         --sab: env(safe-area-inset-bottom, 0px);
         --sal: env(safe-area-inset-left, 0px);
         --sar: env(safe-area-inset-right, 0px);
-        --hud-rail-w: 56px;
+        --hud-rail-w: 110px;
         --hud-bar-h: 56px;
         --hud-active-w: 0px;
         --hud-active-h: 0px;
@@ -55,7 +55,6 @@
         align-items: center;
         justify-content: center;
         background-color: #000;
-        transition: right 0.25s cubic-bezier(0.16, 1, 0.3, 1), bottom 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       canvas.emscripten {
@@ -174,22 +173,24 @@
         transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
       }
 
-      /* LANDSCAPE MODE: Vertical Docked Rail in right safe margin */
+      /* LANDSCAPE MODE: Vertical Docked Rail (2-Columns) in right safe margin */
       @media (orientation: landscape) {
         #mobile-hud {
-          top: max(8px, var(--sat));
-          bottom: max(8px, var(--sab));
-          right: max(6px, var(--sar));
+          top: 0;
+          bottom: 0;
+          margin: auto 0;
+          right: max(8px, var(--sar));
           width: var(--hud-rail-w);
-          border-radius: 24px;
-          padding: 8px 5px;
+          height: fit-content;
+          max-height: calc(100vh - 16px);
+          border-radius: 20px;
+          padding: 8px;
           display: flex;
           flex-direction: column;
           align-items: center;
-          justify-content: space-between;
-          overflow-y: auto;
-          overflow-x: hidden;
-          -webkit-overflow-scrolling: touch;
+          justify-content: center;
+          gap: 5px;
+          overflow: hidden;
         }
 
         #mobile-hud.hud-hidden {
@@ -199,18 +200,35 @@
         }
 
         .hud-group {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
+          display: grid;
+          grid-template-columns: repeat(2, 44px);
           gap: 6px;
-          width: 100%;
+          justify-content: center;
+          align-items: center;
         }
 
         .hud-divider {
-          width: 24px;
+          width: 84px;
           height: 1px;
-          background: rgba(255, 255, 255, 0.12);
-          margin: 4px 0;
+          background: rgba(255, 255, 255, 0.14);
+          margin: 2px 0;
+        }
+
+        #hud-toggle-btn {
+          top: 50%;
+          bottom: auto;
+          right: max(8px, var(--sar));
+          transform: translateY(-50%);
+        }
+
+        #hud-toggle-btn:active {
+          transform: translateY(-50%) scale(0.9);
+        }
+
+        #hud-toggle-btn.btn-hidden {
+          opacity: 0;
+          pointer-events: none;
+          transform: translateY(-50%) scale(0.6);
         }
       }
 
@@ -594,6 +612,11 @@
           <span>🖱️</span>
           <span class="btn-label" id="lbl-rclick">R-Clk</span>
         </button>
+        <!-- Esc / Cancel Button -->
+        <button class="hud-btn" id="btn-esc" title="Escape / Cancel / Close Window" aria-label="Escape">
+          <span style="font-size: 13px;">⎋</span>
+          <span class="btn-label">Esc</span>
+        </button>
         <!-- Ctrl Key Toggle -->
         <button class="hud-btn" id="btn-ctrl" title="Toggle Ctrl Key" aria-label="Control">
           <span style="font-size: 13px;">Ctrl</span>
@@ -601,11 +624,6 @@
         <!-- Shift Key Toggle -->
         <button class="hud-btn" id="btn-shift" title="Toggle Shift Key" aria-label="Shift">
           <span style="font-size: 13px;">⇧</span>
-        </button>
-        <!-- Esc / Cancel Button -->
-        <button class="hud-btn" id="btn-esc" title="Escape / Cancel / Close Window" aria-label="Escape">
-          <span style="font-size: 13px;">⎋</span>
-          <span class="btn-label">Esc</span>
         </button>
       </div>
 
@@ -644,6 +662,7 @@
         <!-- Savegame Manager -->
         <button class="hud-btn" id="btn-saves" title="Savegame Manager" aria-label="Savegames">
           <span style="font-size: 13px;">💾</span>
+          <span class="btn-label">Saves</span>
         </button>
         <!-- Collapse / Dock HUD -->
         <button class="hud-btn" id="btn-collapse" title="Collapse Controls" aria-label="Hide Controls">
@@ -673,16 +692,30 @@
             <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 8px;">Import .sav file from Files:</label>
             <input type="file" id="save-file-input" accept=".sav" style="font-size: 13px;" onchange="importSavegameFile(this)">
           </div>
+          <div style="margin-top: 14px; font-size: 11px; color: #718096; text-align: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px;">
+            OpenTTD Web &bull; Build 20261010-v2 &bull; 2-Column Landscape HUD
+          </div>
         </div>
       </div>
     </div>
 
     <script type="text/javascript">
-      // PWA Service Worker Registration
+      // PWA Service Worker Registration & Live Updates
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('sw.js').then((reg) => {
             console.log('PWA Service Worker registered:', reg.scope);
+            reg.update();
+            reg.addEventListener('updatefound', () => {
+              const newWorker = reg.installing;
+              if (newWorker) {
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    showToast('Update available: reopen app to apply', '🔄', 4000);
+                  }
+                });
+              }
+            });
           }).catch((err) => {
             console.log('PWA Service Worker registration failed:', err);
           });
@@ -728,12 +761,45 @@
       }
 
       // =====================================================================
-      // Ergonomics HUD & Layout Safe-Area Management
+      // Ergonomics HUD & Layout Safe-Area Management (Non-Looping / Anti-Blink)
       // =====================================================================
       const hud = document.getElementById('mobile-hud');
       const hudToggleBtn = document.getElementById('hud-toggle-btn');
       const gameFrame = document.getElementById('game-frame');
       let hudVisible = true;
+      let lastFrameW = 0;
+      let lastFrameH = 0;
+      let isDispatchingSDLResize = false;
+
+      function getGameFrameDimensions() {
+        if (gameFrame) {
+          const rect = gameFrame.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) {
+            return { width: Math.round(rect.width), height: Math.round(rect.height) };
+          }
+        }
+        return {
+          width: document.documentElement.clientWidth || 874,
+          height: document.documentElement.clientHeight || 402
+        };
+      }
+
+      function triggerSDLResizeIfChanged() {
+        const dims = getGameFrameDimensions();
+        // Guard against redundant resize dispatches that destroy canvas & cause blinking
+        if (dims.width === lastFrameW && dims.height === lastFrameH) {
+          return;
+        }
+        lastFrameW = dims.width;
+        lastFrameH = dims.height;
+
+        isDispatchingSDLResize = true;
+        try {
+          window.dispatchEvent(new Event('resize'));
+        } finally {
+          isDispatchingSDLResize = false;
+        }
+      }
 
       function updateLayoutReservations() {
         const isLandscape = window.matchMedia('(orientation: landscape)').matches;
@@ -741,21 +807,21 @@
 
         if (hudVisible) {
           if (isLandscape) {
-            root.style.setProperty('--hud-active-w', 'var(--hud-rail-w)');
+            root.style.setProperty('--hud-active-w', 'calc(var(--hud-rail-w) + max(8px, var(--sar)) - var(--sar) + 6px)');
             root.style.setProperty('--hud-active-h', '0px');
           } else {
             root.style.setProperty('--hud-active-w', '0px');
-            root.style.setProperty('--hud-active-h', 'var(--hud-bar-h)');
+            root.style.setProperty('--hud-active-h', 'calc(var(--hud-bar-h) + 12px)');
           }
         } else {
           root.style.setProperty('--hud-active-w', '0px');
           root.style.setProperty('--hud-active-h', '0px');
         }
 
-        // Trigger SDL2 canvas resize
-        setTimeout(() => {
-          window.dispatchEvent(new Event('resize'));
-        }, 120);
+        // Check if layout update altered game dimensions on the next animation frame
+        requestAnimationFrame(() => {
+          triggerSDLResizeIfChanged();
+        });
       }
 
       function toggleHUD(show) {
@@ -772,8 +838,11 @@
 
       document.getElementById('btn-collapse').addEventListener('click', () => toggleHUD(false));
       hudToggleBtn.addEventListener('click', () => toggleHUD(true));
-      window.addEventListener('orientationchange', () => setTimeout(updateLayoutReservations, 150));
-      window.addEventListener('resize', () => updateLayoutReservations());
+      window.addEventListener('orientationchange', () => setTimeout(updateLayoutReservations, 100));
+      window.addEventListener('resize', () => {
+        if (isDispatchingSDLResize) return;
+        updateLayoutReservations();
+      });
       updateLayoutReservations();
 
       // =====================================================================

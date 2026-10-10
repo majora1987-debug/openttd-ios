@@ -1,5 +1,7 @@
-const CACHE_NAME = 'openttd-v1';
-const ASSETS_TO_CACHE = [
+const CACHE_NAME = 'openttd-v2-landscape-2col';
+const PRECACHE_ASSETS = [
+  './',
+  './index.html',
   './openttd.html',
   './openttd.js',
   './openttd.wasm',
@@ -12,8 +14,8 @@ const ASSETS_TO_CACHE = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE).catch((err) => {
-        console.warn('Pre-cache error (some assets may be fetched on demand):', err);
+      return cache.addAll(PRECACHE_ASSETS).catch((err) => {
+        console.warn('Pre-cache warning (some assets may be fetched on demand):', err);
       });
     }).then(() => self.skipWaiting())
   );
@@ -23,7 +25,10 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+        keys.filter((key) => key !== CACHE_NAME).map((key) => {
+          console.log('Clearing legacy cache:', key);
+          return caches.delete(key);
+        })
       );
     }).then(() => self.clients.claim())
   );
@@ -34,6 +39,32 @@ self.addEventListener('fetch', (event) => {
   if (event.request.headers.has('range')) {
     return;
   }
+
+  const url = new URL(event.request.url);
+  const isNavigation = event.request.mode === 'navigate';
+  const isAppShell = url.pathname.endsWith('.html') ||
+                     url.pathname.endsWith('.js') ||
+                     url.pathname.endsWith('.json') ||
+                     url.pathname === '/' ||
+                     url.pathname.endsWith('/');
+
+  // Network-first strategy for app shell & navigations: ensure updates load immediately
+  if (isNavigation || isAppShell) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Cache-first strategy for heavy static data assets (wasm, data packages, icons)
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
@@ -43,9 +74,9 @@ self.addEventListener('fetch', (event) => {
         if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
           return networkResponse;
         }
-        const responseToCache = networkResponse.clone();
+        const responseClone = networkResponse.clone();
         caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
+          cache.put(event.request, responseClone);
         });
         return networkResponse;
       });
