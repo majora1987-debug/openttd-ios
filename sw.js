@@ -1,4 +1,4 @@
-const CACHE_NAME = 'openttd-v5-fast-256';
+const CACHE_NAME = 'openttd-v6-clean-menu';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
