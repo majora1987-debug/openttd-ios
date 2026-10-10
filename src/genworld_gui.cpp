@@ -345,11 +345,17 @@ static void LandscapeGenerationCallback(Window *w, bool confirmed)
 	if (confirmed) StartGeneratingLandscape(w->window_number);
 }
 
+#ifdef __EMSCRIPTEN__
+static constexpr uint MAX_GENWORLD_MAP_SIZE_BITS = 10; ///< Maximum map size is 1024 on Web / mobile devices (exclude 2048 and 4096).
+#else
+static constexpr uint MAX_GENWORLD_MAP_SIZE_BITS = MAX_MAP_SIZE_BITS;
+#endif
+
 static DropDownList BuildMapsizeDropDown()
 {
 	DropDownList list;
 
-	for (uint i = MIN_MAP_SIZE_BITS; i <= MAX_MAP_SIZE_BITS; i++) {
+	for (uint i = MIN_MAP_SIZE_BITS; i <= MAX_GENWORLD_MAP_SIZE_BITS; i++) {
 		list.push_back(MakeDropDownListStringItem(GetString(STR_JUST_INT, 1ULL << i), i));
 	}
 
@@ -1035,6 +1041,11 @@ static void _ShowGenerateLandscape(GenerateLandscapeWindowMode mode)
 
 	CloseWindowByClass(WindowClass::GenerateLandscape);
 
+#ifdef __EMSCRIPTEN__
+	_settings_newgame.game_creation.map_x = std::min<uint8_t>(_settings_newgame.game_creation.map_x, MAX_GENWORLD_MAP_SIZE_BITS);
+	_settings_newgame.game_creation.map_y = std::min<uint8_t>(_settings_newgame.game_creation.map_y, MAX_GENWORLD_MAP_SIZE_BITS);
+#endif
+
 	/* Generate a new seed when opening the window */
 	_settings_newgame.game_creation.generation_seed = InteractiveRandom();
 
@@ -1333,6 +1344,10 @@ static WindowDesc _create_scenario_desc(
 void ShowCreateScenario()
 {
 	CloseWindowByClass(WindowClass::GenerateLandscape);
+#ifdef __EMSCRIPTEN__
+	_settings_newgame.game_creation.map_x = std::min<uint8_t>(_settings_newgame.game_creation.map_x, MAX_GENWORLD_MAP_SIZE_BITS);
+	_settings_newgame.game_creation.map_y = std::min<uint8_t>(_settings_newgame.game_creation.map_y, MAX_GENWORLD_MAP_SIZE_BITS);
+#endif
 	new CreateScenarioWindow(_create_scenario_desc, GLWM_SCENARIO);
 }
 
@@ -1472,6 +1487,10 @@ void ShowGenerateWorldProgress()
 {
 	if (BringWindowToFrontById(WindowClass::ModalProgress, 0)) return;
 	new GenerateProgressWindow();
+#ifdef __EMSCRIPTEN__
+	SetWindowDirty(WindowClass::ModalProgress, 0);
+	VideoDriver::GetInstance()->GameLoopPause();
+#endif
 }
 
 static void _SetGeneratingWorldProgress(GenWorldProgress cls, uint progress, uint total)
@@ -1525,7 +1544,18 @@ static void _SetGeneratingWorldProgress(GenWorldProgress cls, uint progress, uin
 
 	SetWindowDirty(WindowClass::ModalProgress, 0);
 
+#ifdef __EMSCRIPTEN__
+	static uint last_percent = 101;
+	static auto last_draw = std::chrono::steady_clock::now();
+	auto now = std::chrono::steady_clock::now();
+	if (GenWorldStatus::percent != last_percent || now - last_draw >= std::chrono::milliseconds(50)) {
+		last_percent = GenWorldStatus::percent;
+		last_draw = now;
+		VideoDriver::GetInstance()->GameLoopPause();
+	}
+#else
 	VideoDriver::GetInstance()->GameLoopPause();
+#endif
 }
 
 /**

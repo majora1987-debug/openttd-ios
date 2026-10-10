@@ -367,9 +367,12 @@ if(EMSCRIPTEN)
     # Allow heap-growth, and start with a bigger memory size.
     target_link_libraries(WASM::WASM INTERFACE "-s ALLOW_MEMORY_GROWTH=1")
     target_link_libraries(WASM::WASM INTERFACE "-s INITIAL_MEMORY=33554432")
+    target_link_libraries(WASM::WASM INTERFACE "-s ASYNCIFY=1")
+    target_link_libraries(WASM::WASM INTERFACE "-s ASYNCIFY_STACK_SIZE=65536")
     target_link_libraries(WASM::WASM INTERFACE "-s DISABLE_EXCEPTION_CATCHING=0")
     target_link_libraries(WASM::WASM INTERFACE "-s WASM_BIGINT")
     add_definitions(-s DISABLE_EXCEPTION_CATCHING=0)
+    add_definitions(-s ASYNCIFY=1)
 
     # Export functions to Javascript.
     target_link_libraries(WASM::WASM INTERFACE "-s EXPORTED_FUNCTIONS='[\"_main\", \"_em_openttd_add_server\"]' -s EXPORTED_RUNTIME_METHODS='[\"cwrap\", \"HEAPU8\"]'")

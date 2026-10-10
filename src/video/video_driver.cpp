@@ -21,6 +21,9 @@
 #include "../thread.h"
 #include "../window_func.h"
 #include "video_driver.hpp"
+#ifdef __EMSCRIPTEN__
+#	include <emscripten.h>
+#endif
 
 #include "../safeguards.h"
 
@@ -67,6 +70,19 @@ void VideoDriver::GameThread()
  */
 void VideoDriver::GameLoopPause()
 {
+#ifdef __EMSCRIPTEN__
+	{
+		VideoBufferLocker lock;
+		while (this->PollEvent()) {}
+		this->InputLoop();
+		::UpdateWindows();
+		this->CheckPaletteAnim();
+		this->Paint();
+	}
+	emscripten_sleep(1);
+	return;
+#endif
+
 	/* If we are not called from the game-thread, ignore this request. */
 	if (std::this_thread::get_id() != this->game_thread.get_id()) return;
 

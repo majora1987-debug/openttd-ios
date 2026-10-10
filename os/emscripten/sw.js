@@ -1,4 +1,4 @@
-const CACHE_NAME = 'openttd-v2-landscape-2col';
+const CACHE_NAME = 'openttd-v3-mapgen-progress';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
