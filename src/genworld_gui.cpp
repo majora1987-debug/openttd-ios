@@ -346,7 +346,7 @@ static void LandscapeGenerationCallback(Window *w, bool confirmed)
 }
 
 #ifdef __EMSCRIPTEN__
-static constexpr uint MAX_GENWORLD_MAP_SIZE_BITS = 10; ///< Maximum map size is 1024 on Web / mobile devices (exclude 2048 and 4096).
+static constexpr uint MAX_GENWORLD_MAP_SIZE_BITS = 9; ///< Maximum map size is 512 on Web / mobile devices (exclude 1024, 2048, and 4096).
 #else
 static constexpr uint MAX_GENWORLD_MAP_SIZE_BITS = MAX_MAP_SIZE_BITS;
 #endif
