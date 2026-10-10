@@ -1,4 +1,4 @@
-const CACHE_NAME = 'openttd-v4-mapsize-512';
+const CACHE_NAME = 'openttd-v5-fast-256';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
