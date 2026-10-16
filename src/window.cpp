@@ -2083,6 +2083,7 @@ static void EnsureVisibleCaption(Window *w, int nx, int ny)
 		/* Make sure the title bar isn't hidden behind the main tool bar or the status bar. */
 		PreventHiding(&nx, &ny, caption_rect, FindWindowById(WindowClass::MainToolbar, 0), w->left, PreventHideDirection::Down);
 		PreventHiding(&nx, &ny, caption_rect, FindWindowById(WindowClass::Statusbar, 0), w->left, PreventHideDirection::Up);
+		if (ny < 0) ny = 0;
 	}
 
 	if (w->viewport != nullptr) {
@@ -3616,6 +3617,8 @@ void RelocateAllWindows(int neww, int newh)
 				if (w->flags.Test(WindowFlag::Centred)) {
 					top = (newh - w->height) >> 1;
 					left = (neww - w->width) >> 1;
+					if (left < 0) left = 0;
+					if (top < 0) top = 0;
 					break;
 				}
 

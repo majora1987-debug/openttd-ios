@@ -1951,7 +1951,7 @@ class NWidgetScenarioToolbarContainer : public NWidgetToolbarContainer {
 		}
 
 		/* Split toolbar */
-		width -= this->panel_widths[1];
+		width = (width > this->panel_widths[1]) ? (width - this->panel_widths[1]) : 0;
 		arrangeable_count = lengthof(arrange_switch) / 2;
 		button_count = arrangeable_count - 1;
 		spacer_count = 0;

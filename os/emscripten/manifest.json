@@ -2,9 +2,9 @@
   "name": "OpenTTD",
   "short_name": "OpenTTD",
   "description": "OpenTTD - Open-source Transport Tycoon Deluxe simulation game",
-  "start_url": "openttd.html",
+  "start_url": "./",
   "display": "fullscreen",
-  "orientation": "landscape",
+  "orientation": "any",
   "background_color": "#000000",
   "theme_color": "#1b2838",
   "icons": [

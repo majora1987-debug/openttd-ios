@@ -18,7 +18,7 @@
         --sar: env(safe-area-inset-right, 0px);
         --game-top-inset: var(--sat);
         --hud-rail-w: 110px;
-        --hud-bar-h: 56px;
+        --hud-bar-h: 94px;
         --hud-active-w: 0px;
         --hud-active-h: 0px;
       }
@@ -201,15 +201,17 @@
           right: max(8px, var(--sar));
           width: var(--hud-rail-w);
           height: fit-content;
-          max-height: calc(100vh - 16px);
+          max-height: calc(100dvh - 16px);
           border-radius: 20px;
-          padding: 8px;
+          padding: 8px 6px;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          gap: 5px;
-          overflow: hidden;
+          gap: 4px;
+          overflow-y: auto;
+          overflow-x: hidden;
+          -webkit-overflow-scrolling: touch;
         }
 
         #mobile-hud.hud-hidden {
@@ -221,9 +223,14 @@
         .hud-group {
           display: grid;
           grid-template-columns: repeat(2, 44px);
-          gap: 6px;
+          gap: 5px;
           justify-content: center;
           align-items: center;
+        }
+
+        .hud-btn {
+          height: clamp(36px, calc((100dvh - 56px) / 6.5), 44px);
+          min-height: 36px;
         }
 
         .hud-divider {
@@ -238,10 +245,14 @@
           bottom: auto;
           right: max(8px, var(--sar));
           transform: translateY(-50%);
+          opacity: 0.65;
         }
 
+        #hud-toggle-btn:hover,
+        #hud-toggle-btn:focus,
         #hud-toggle-btn:active {
-          transform: translateY(-50%) scale(0.9);
+          opacity: 1;
+          transform: translateY(-50%) scale(0.92);
         }
 
         #hud-toggle-btn.btn-hidden {
@@ -251,22 +262,22 @@
         }
       }
 
-      /* PORTRAIT MODE: Horizontal Docked Bar above bottom home indicator */
+      /* PORTRAIT MODE: 2-Row Grid Bar above bottom home indicator */
       @media (orientation: portrait) {
         #mobile-hud {
           left: max(8px, var(--sal));
           right: max(8px, var(--sar));
           bottom: calc(var(--sab) + 6px);
           height: var(--hud-bar-h);
-          border-radius: 24px;
-          padding: 5px 8px;
-          display: flex;
-          flex-direction: row;
+          border-radius: 20px;
+          padding: 6px 8px;
+          display: grid;
+          grid-template-columns: repeat(6, 1fr);
+          grid-template-rows: repeat(2, 1fr);
+          gap: 6px;
           align-items: center;
-          justify-content: space-between;
-          overflow-x: auto;
-          overflow-y: hidden;
-          -webkit-overflow-scrolling: touch;
+          justify-content: center;
+          overflow: hidden;
         }
 
         #mobile-hud.hud-hidden {
@@ -276,17 +287,37 @@
         }
 
         .hud-group {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          gap: 6px;
+          display: contents;
         }
 
         .hud-divider {
-          width: 1px;
-          height: 24px;
-          background: rgba(255, 255, 255, 0.12);
-          margin: 0 4px;
+          display: none;
+        }
+
+        .hud-btn {
+          width: 100%;
+          min-width: 0;
+          height: 38px;
+          min-height: 38px;
+          border-radius: 10px;
+          font-size: 13.5px;
+        }
+
+        .hud-btn .btn-label {
+          display: none;
+        }
+
+        #hud-toggle-btn {
+          bottom: calc(var(--sab) + 32px);
+          right: max(12px, var(--sar));
+          opacity: 0.65;
+        }
+
+        #hud-toggle-btn:hover,
+        #hud-toggle-btn:focus,
+        #hud-toggle-btn:active {
+          opacity: 1;
+          transform: scale(0.92);
         }
       }
 
@@ -354,8 +385,8 @@
       /* Floating Mini Toggle Button (When HUD is collapsed) */
       #hud-toggle-btn {
         position: fixed;
-        bottom: max(10px, var(--sab));
-        right: max(10px, var(--sar));
+        bottom: calc(var(--sab) + 32px);
+        right: max(12px, var(--sar));
         z-index: 55;
         width: 44px;
         height: 44px;
@@ -372,12 +403,16 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
+        opacity: 0.7;
         box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
         transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
       }
 
+      #hud-toggle-btn:hover,
+      #hud-toggle-btn:focus,
       #hud-toggle-btn:active {
-        transform: scale(0.9);
+        opacity: 1;
+        transform: scale(0.92);
       }
 
       #hud-toggle-btn.btn-hidden {
@@ -806,8 +841,20 @@
         };
       }
 
+      function syncCanvasSize() {
+        const canvas = document.getElementById('canvas');
+        const dims = getGameFrameDimensions();
+        if (canvas && dims.width > 0 && dims.height > 0) {
+          if (canvas.width !== dims.width || canvas.height !== dims.height) {
+            canvas.width = dims.width;
+            canvas.height = dims.height;
+          }
+        }
+      }
+
       function triggerSDLResizeIfChanged() {
         const dims = getGameFrameDimensions();
+        syncCanvasSize();
         // Guard against redundant resize dispatches that destroy canvas & cause blinking
         if (dims.width === lastFrameW && dims.height === lastFrameH) {
           return;
@@ -828,10 +875,7 @@
         const root = document.documentElement;
 
         if (isLandscape) {
-          // In landscape, iOS reports env(safe-area-inset-top) as 0px because the notch is on the side.
-          // However, iOS reserves the top 16-20px for system edge gestures (Notification Center, Control Center, Safari chrome).
-          // Providing a minimum 20px clearance keeps the OpenTTD toolbar fully responsive and clear of the bezel.
-          root.style.setProperty('--game-top-inset', 'max(var(--sat), 20px)');
+          root.style.setProperty('--game-top-inset', 'var(--sat)');
           if (hudVisible) {
             root.style.setProperty('--hud-active-w', 'calc(var(--hud-rail-w) + max(8px, var(--sar)) - var(--sar) + 6px)');
             root.style.setProperty('--hud-active-h', '0px');
@@ -850,7 +894,6 @@
           }
         }
 
-        // Check if layout update altered game dimensions on the next animation frame
         requestAnimationFrame(() => {
           triggerSDLResizeIfChanged();
         });
@@ -868,30 +911,38 @@
         updateLayoutReservations();
       }
 
+      function scheduleLayoutResync() {
+        updateLayoutReservations();
+        setTimeout(updateLayoutReservations, 50);
+        setTimeout(updateLayoutReservations, 150);
+        setTimeout(updateLayoutReservations, 300);
+        setTimeout(updateLayoutReservations, 500);
+      }
+
       document.getElementById('btn-collapse').addEventListener('click', () => toggleHUD(false));
       hudToggleBtn.addEventListener('click', () => toggleHUD(true));
-      window.addEventListener('orientationchange', () => setTimeout(updateLayoutReservations, 100));
+      window.addEventListener('orientationchange', scheduleLayoutResync);
       window.addEventListener('resize', () => {
         if (isDispatchingSDLResize) return;
         updateLayoutReservations();
       });
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', () => {
+          if (isDispatchingSDLResize) return;
+          updateLayoutReservations();
+        });
+      }
+      if (window.ResizeObserver && gameFrame) {
+        new ResizeObserver(() => {
+          if (isDispatchingSDLResize) return;
+          triggerSDLResizeIfChanged();
+        }).observe(gameFrame);
+      }
       updateLayoutReservations();
 
       // =====================================================================
       // Intercept window.innerWidth & innerHeight for Safe-Area SDL2 Resolution
       // =====================================================================
-      function getGameFrameDimensions() {
-        if (gameFrame) {
-          const rect = gameFrame.getBoundingClientRect();
-          if (rect.width > 0 && rect.height > 0) {
-            return { width: Math.round(rect.width), height: Math.round(rect.height) };
-          }
-        }
-        return {
-          width: document.documentElement.clientWidth || 874,
-          height: document.documentElement.clientHeight || 402
-        };
-      }
 
       try {
         Object.defineProperty(window, 'innerWidth', {
@@ -989,18 +1040,24 @@
 
       kbProxy.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
+          e.preventDefault();
           dispatchKeyEvent('keydown', 'Enter', 'Enter', 13);
           setTimeout(() => dispatchKeyEvent('keyup', 'Enter', 'Enter', 13), 30);
           kbProxy.blur();
           return;
         }
         if (e.key === 'Backspace') {
+          e.preventDefault();
           dispatchKeyEvent('keydown', 'Backspace', 'Backspace', 8);
           setTimeout(() => dispatchKeyEvent('keyup', 'Backspace', 'Backspace', 8), 30);
           return;
         }
-        if (e.key && e.key.length === 1) {
-          dispatchTextInput(e.key);
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          dispatchKeyEvent('keydown', 'Escape', 'Escape', 27);
+          setTimeout(() => dispatchKeyEvent('keyup', 'Escape', 'Escape', 27), 30);
+          kbProxy.blur();
+          return;
         }
       });
 
@@ -1008,15 +1065,16 @@
         if (e.data) {
           dispatchTextInput(e.data);
         }
+        kbProxy.value = '';
       });
 
       function dispatchTextInput(text) {
         for (let i = 0; i < text.length; i++) {
           const char = text[i];
           const code = char.charCodeAt(0);
-          dispatchKeyEvent('keydown', char, 'Key' + char.toUpperCase(), code);
-          dispatchKeyEvent('keypress', char, 'Key' + char.toUpperCase(), code);
-          dispatchKeyEvent('keyup', char, 'Key' + char.toUpperCase(), code);
+          dispatchKeyEvent('keydown', char, 'Key' + char.toUpperCase(), code, code);
+          dispatchKeyEvent('keypress', char, 'Key' + char.toUpperCase(), code, code);
+          dispatchKeyEvent('keyup', char, 'Key' + char.toUpperCase(), code, code);
         }
       }
 
@@ -1048,15 +1106,23 @@
       document.getElementById('btn-zoom-in').addEventListener('click', () => simulateWheel(-120));
       document.getElementById('btn-zoom-out').addEventListener('click', () => simulateWheel(120));
 
-      function dispatchKeyEvent(type, key, code, keyCode) {
+      function dispatchKeyEvent(type, key, code, keyCode, charCode) {
+        const charVal = charCode || (key && key.length === 1 ? key.charCodeAt(0) : 0);
         const ev = new KeyboardEvent(type, {
           key: key,
           code: code,
           keyCode: keyCode,
           which: keyCode,
+          charCode: type === 'keypress' ? charVal : 0,
           bubbles: true,
           cancelable: true
         });
+        try {
+          Object.defineProperty(ev, 'charCode', { get: () => type === 'keypress' ? charVal : 0 });
+          Object.defineProperty(ev, 'keyCode', { get: () => keyCode });
+          Object.defineProperty(ev, 'which', { get: () => type === 'keypress' ? charVal : keyCode });
+        } catch (_) {}
+
         window.dispatchEvent(ev);
         document.dispatchEvent(ev);
         const canvas = document.getElementById('canvas');
@@ -1168,6 +1234,7 @@
         let lastMidY = 0;
         let isTwoFingerDragging = false;
         let isTwoFingerActive = false;
+        let isSingleFingerDragging = false;
 
         let ringTimer = null;
         let longPressTimer = null;
@@ -1206,6 +1273,9 @@
         }
 
         canvas.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+
           if (!audioUnlocked) {
             unlockAudioAndStart();
           }
@@ -1214,14 +1284,12 @@
             const touch = e.touches[0];
             touchStartPos = { x: touch.clientX, y: touch.clientY };
             longPressTriggered = false;
+            isSingleFingerDragging = false;
 
             if (rClickMode) {
-              // Right-Click Mode active: execute right-click immediately
-              e.preventDefault();
               triggerMouseEvent('mousemove', touch.clientX, touch.clientY, 0);
               triggerMouseEvent('mousedown', touch.clientX, touch.clientY, 2);
             } else {
-              // Start long-press detection with delayed visual feedback ring (only on hold > 120ms)
               clearTimeout(longPressTimer);
               clearTimeout(ringTimer);
               ringTimer = setTimeout(() => {
@@ -1232,7 +1300,8 @@
                 longPressTriggered = true;
                 triggerRingPop();
 
-                // Disarm trailing left-click and send right click
+                // Fire clean right click down & up without any stray left click
+                triggerMouseEvent('mousemove', touch.clientX, touch.clientY, 0);
                 triggerMouseEvent('mousedown', touch.clientX, touch.clientY, 2);
                 setTimeout(() => {
                   triggerMouseEvent('mouseup', touch.clientX, touch.clientY, 2);
@@ -1245,6 +1314,11 @@
             hideRing();
             longPressTriggered = false;
 
+            if (isSingleFingerDragging) {
+              isSingleFingerDragging = false;
+              triggerMouseEvent('mouseup', touchStartPos.x, touchStartPos.y, 0);
+            }
+
             const t0 = e.touches[0];
             const t1 = e.touches[1];
             initialPinchDistance = getDistance(t0, t1);
@@ -1253,9 +1327,12 @@
             isTwoFingerActive = true;
             isTwoFingerDragging = false;
           }
-        }, { passive: false });
+        }, { passive: false, capture: true });
 
         canvas.addEventListener('touchmove', (e) => {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+
           if (e.touches.length === 1) {
             const touch = e.touches[0];
             const dist = Math.hypot(touch.clientX - touchStartPos.x, touch.clientY - touchStartPos.y);
@@ -1266,11 +1343,19 @@
             }
 
             if (rClickMode) {
-              e.preventDefault();
               triggerMouseEvent('mousemove', touch.clientX, touch.clientY, 2);
+            } else if (!longPressTriggered) {
+              if (dist > 8) {
+                if (!isSingleFingerDragging) {
+                  isSingleFingerDragging = true;
+                  triggerMouseEvent('mousemove', touch.clientX, touch.clientY, 0);
+                  triggerMouseEvent('mousedown', touch.clientX, touch.clientY, 0);
+                } else {
+                  triggerMouseEvent('mousemove', touch.clientX, touch.clientY, 0);
+                }
+              }
             }
           } else if (e.touches.length === 2) {
-            e.preventDefault();
             clearTimeout(longPressTimer);
             clearTimeout(ringTimer);
             hideRing();
@@ -1295,6 +1380,7 @@
             // Engage map pan after passing deadzone threshold
             if (!isTwoFingerDragging && Math.hypot(midX - lastMidX, midY - lastMidY) > 5) {
               isTwoFingerDragging = true;
+              triggerMouseEvent('mousemove', midX, midY, 0);
               triggerMouseEvent('mousedown', midX, midY, 2);
             }
 
@@ -1305,9 +1391,12 @@
             lastMidX = midX;
             lastMidY = midY;
           }
-        }, { passive: false });
+        }, { passive: false, capture: true });
 
         canvas.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+
           clearTimeout(longPressTimer);
           clearTimeout(ringTimer);
           hideRing();
@@ -1321,17 +1410,27 @@
           }
 
           if (rClickMode && e.touches.length === 0) {
-            e.preventDefault();
             const touch = e.changedTouches[0] || { clientX: lastMidX, clientY: lastMidY };
             triggerMouseEvent('mouseup', touch.clientX, touch.clientY, 2);
           } else if (longPressTriggered) {
-            // Swallow trailing left-click after successful long-press
-            e.preventDefault();
             longPressTriggered = false;
+          } else if (isSingleFingerDragging) {
+            isSingleFingerDragging = false;
+            const touch = e.changedTouches[0] || { clientX: touchStartPos.x, clientY: touchStartPos.y };
+            triggerMouseEvent('mouseup', touch.clientX, touch.clientY, 0);
+          } else if (!isTwoFingerActive && e.touches.length === 0) {
+            // Quick tap
+            const touch = e.changedTouches[0] || { clientX: touchStartPos.x, clientY: touchStartPos.y };
+            triggerMouseEvent('mousemove', touch.clientX, touch.clientY, 0);
+            triggerMouseEvent('mousedown', touch.clientX, touch.clientY, 0);
+            triggerMouseEvent('mouseup', touch.clientX, touch.clientY, 0);
           }
-        }, { passive: false });
+        }, { passive: false, capture: true });
 
-        canvas.addEventListener('touchcancel', () => {
+        canvas.addEventListener('touchcancel', (e) => {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+
           clearTimeout(longPressTimer);
           clearTimeout(ringTimer);
           hideRing();
@@ -1339,9 +1438,13 @@
             isTwoFingerDragging = false;
             triggerMouseEvent('mouseup', lastMidX, lastMidY, 2);
           }
+          if (isSingleFingerDragging) {
+            isSingleFingerDragging = false;
+            triggerMouseEvent('mouseup', touchStartPos.x, touchStartPos.y, 0);
+          }
           isTwoFingerActive = false;
           longPressTriggered = false;
-        });
+        }, { passive: false, capture: true });
 
         // =====================================================================
         // Top-Edge Tap Cushion: Extends tap target for toolbar in landscape
@@ -1356,7 +1459,7 @@
               e.preventDefault();
               const touch = e.touches[0];
               const rect = canvas.getBoundingClientRect();
-              const targetY = rect.top + 6; // Route tap into top toolbar directly underneath
+              const targetY = rect.top + 6;
 
               if (rClickMode) {
                 triggerMouseEvent('mousemove', touch.clientX, targetY, 0);
@@ -1393,7 +1496,7 @@
             clientX: clientX,
             clientY: clientY,
             button: button,
-            buttons: button === 2 ? 2 : 1,
+            buttons: type === 'mouseup' ? 0 : (button === 2 ? 2 : 1),
             bubbles: true,
             cancelable: true,
             ctrlKey: ctrlActive,

@@ -78,7 +78,7 @@ static constexpr std::initializer_list<NWidgetPart> _nested_generate_landscape_w
 		NWidget(WWT_CAPTION, Colours::Brown), SetStringTip(STR_MAPGEN_WORLD_GENERATION_CAPTION),
 	EndContainer(),
 	NWidget(WWT_PANEL, Colours::Brown),
-		NWidget(NWID_VERTICAL), SetPIP(0, WidgetDimensions::unscaled.vsep_wide, 0), SetPadding(WidgetDimensions::unscaled.sparse),
+		NWidget(NWID_VERTICAL), SetPIP(0, WidgetDimensions::unscaled.vsep_normal, 0), SetPadding(WidgetDimensions::unscaled.picker),
 			/* Landscape selection. */
 			NWidget(NWID_HORIZONTAL), SetPIP(0, WidgetDimensions::unscaled.hsep_wide, 0), SetPIPRatio(1, 1, 1),
 				NWidget(WWT_IMGBTN_2, Colours::Orange, WID_GL_TEMPERATE), SetSpriteTip(SPR_SELECT_TEMPERATE, STR_INTRO_TOOLTIP_TEMPERATE),
@@ -88,7 +88,7 @@ static constexpr std::initializer_list<NWidgetPart> _nested_generate_landscape_w
 			EndContainer(),
 
 			/* Generation options. */
-			NWidget(NWID_HORIZONTAL), SetPIP(0, WidgetDimensions::unscaled.hsep_wide, 0),
+			NWidget(NWID_HORIZONTAL), SetPIP(0, WidgetDimensions::unscaled.hsep_normal, 0),
 				/* Left half (land generation options) */
 				NWidget(NWID_HORIZONTAL), SetPIP(0, WidgetDimensions::unscaled.hsep_normal, 0),
 					/* Labels on the left side (global column 1). */
@@ -190,13 +190,13 @@ static constexpr std::initializer_list<NWidgetPart> _nested_generate_landscape_w
 
 			/* AI, GS, and NewGRF settings */
 			NWidget(NWID_HORIZONTAL, NWidContainerFlag::EqualSize),
-				NWidget(WWT_PUSHTXTBTN, Colours::Orange, WID_GL_AI_BUTTON), SetMinimalTextLines(2, 0), SetStringTip(STR_MAPGEN_AI_SETTINGS, STR_MAPGEN_AI_SETTINGS_TOOLTIP), SetFill(1, 0),
-				NWidget(WWT_PUSHTXTBTN, Colours::Orange, WID_GL_GS_BUTTON), SetMinimalTextLines(2, 0), SetStringTip(STR_MAPGEN_GS_SETTINGS, STR_MAPGEN_GS_SETTINGS_TOOLTIP), SetFill(1, 0),
-				NWidget(WWT_PUSHTXTBTN, Colours::Orange, WID_GL_NEWGRF_BUTTON), SetMinimalTextLines(2, 0), SetStringTip(STR_MAPGEN_NEWGRF_SETTINGS, STR_MAPGEN_NEWGRF_SETTINGS_TOOLTIP), SetFill(1, 0),
+				NWidget(WWT_PUSHTXTBTN, Colours::Orange, WID_GL_AI_BUTTON), SetMinimalTextLines(1, 0), SetStringTip(STR_MAPGEN_AI_SETTINGS, STR_MAPGEN_AI_SETTINGS_TOOLTIP), SetFill(1, 0),
+				NWidget(WWT_PUSHTXTBTN, Colours::Orange, WID_GL_GS_BUTTON), SetMinimalTextLines(1, 0), SetStringTip(STR_MAPGEN_GS_SETTINGS, STR_MAPGEN_GS_SETTINGS_TOOLTIP), SetFill(1, 0),
+				NWidget(WWT_PUSHTXTBTN, Colours::Orange, WID_GL_NEWGRF_BUTTON), SetMinimalTextLines(1, 0), SetStringTip(STR_MAPGEN_NEWGRF_SETTINGS, STR_MAPGEN_NEWGRF_SETTINGS_TOOLTIP), SetFill(1, 0),
 			EndContainer(),
 
 			/* Generate */
-			NWidget(WWT_PUSHTXTBTN, Colours::Green, WID_GL_GENERATE_BUTTON), SetMinimalTextLines(3, 0), SetStringTip(STR_MAPGEN_GENERATE, STR_MAPGEN_GENERATE_TOOLTIP), SetFill(1, 1),
+			NWidget(WWT_PUSHTXTBTN, Colours::Green, WID_GL_GENERATE_BUTTON), SetMinimalTextLines(2, 0), SetStringTip(STR_MAPGEN_GENERATE, STR_MAPGEN_GENERATE_TOOLTIP), SetFill(1, 1),
 		EndContainer(),
 	EndContainer(),
 };
@@ -209,7 +209,7 @@ static constexpr std::initializer_list<NWidgetPart> _nested_heightmap_load_widge
 		NWidget(WWT_CAPTION, Colours::Brown), SetStringTip(STR_MAPGEN_WORLD_GENERATION_CAPTION),
 	EndContainer(),
 	NWidget(WWT_PANEL, Colours::Brown),
-		NWidget(NWID_VERTICAL), SetPIP(0, WidgetDimensions::unscaled.vsep_wide, 0), SetPadding(WidgetDimensions::unscaled.sparse),
+		NWidget(NWID_VERTICAL), SetPIP(0, WidgetDimensions::unscaled.vsep_normal, 0), SetPadding(WidgetDimensions::unscaled.picker),
 			/* Landscape selection. */
 			NWidget(NWID_HORIZONTAL), SetPIP(0, WidgetDimensions::unscaled.hsep_wide, 0), SetPIPRatio(1, 1, 1),
 				NWidget(WWT_IMGBTN_2, Colours::Orange, WID_GL_TEMPERATE), SetSpriteTip(SPR_SELECT_TEMPERATE, STR_INTRO_TOOLTIP_TEMPERATE),
@@ -225,7 +225,7 @@ static constexpr std::initializer_list<NWidgetPart> _nested_heightmap_load_widge
 			EndContainer(),
 
 			/* Generation options. */
-			NWidget(NWID_HORIZONTAL), SetPIP(0, WidgetDimensions::unscaled.hsep_wide, 0),
+			NWidget(NWID_HORIZONTAL), SetPIP(0, WidgetDimensions::unscaled.hsep_normal, 0),
 				/* Left half (land generation options) */
 				NWidget(NWID_HORIZONTAL), SetPIP(0, WidgetDimensions::unscaled.hsep_normal, 0),
 					/* Labels on the left side (global column 1). */
@@ -311,13 +311,13 @@ static constexpr std::initializer_list<NWidgetPart> _nested_heightmap_load_widge
 
 			/* AI, GS, and NewGRF settings */
 			NWidget(NWID_HORIZONTAL, NWidContainerFlag::EqualSize),
-				NWidget(WWT_PUSHTXTBTN, Colours::Orange, WID_GL_AI_BUTTON), SetMinimalTextLines(2, 0), SetStringTip(STR_MAPGEN_AI_SETTINGS, STR_MAPGEN_AI_SETTINGS_TOOLTIP), SetFill(1, 0),
-				NWidget(WWT_PUSHTXTBTN, Colours::Orange, WID_GL_GS_BUTTON), SetMinimalTextLines(2, 0), SetStringTip(STR_MAPGEN_GS_SETTINGS, STR_MAPGEN_GS_SETTINGS_TOOLTIP),  SetFill(1, 0),
-				NWidget(WWT_PUSHTXTBTN, Colours::Orange, WID_GL_NEWGRF_BUTTON), SetMinimalTextLines(2, 0), SetStringTip(STR_MAPGEN_NEWGRF_SETTINGS, STR_MAPGEN_NEWGRF_SETTINGS_TOOLTIP), SetFill(1, 0),
+				NWidget(WWT_PUSHTXTBTN, Colours::Orange, WID_GL_AI_BUTTON), SetMinimalTextLines(1, 0), SetStringTip(STR_MAPGEN_AI_SETTINGS, STR_MAPGEN_AI_SETTINGS_TOOLTIP), SetFill(1, 0),
+				NWidget(WWT_PUSHTXTBTN, Colours::Orange, WID_GL_GS_BUTTON), SetMinimalTextLines(1, 0), SetStringTip(STR_MAPGEN_GS_SETTINGS, STR_MAPGEN_GS_SETTINGS_TOOLTIP),  SetFill(1, 0),
+				NWidget(WWT_PUSHTXTBTN, Colours::Orange, WID_GL_NEWGRF_BUTTON), SetMinimalTextLines(1, 0), SetStringTip(STR_MAPGEN_NEWGRF_SETTINGS, STR_MAPGEN_NEWGRF_SETTINGS_TOOLTIP), SetFill(1, 0),
 			EndContainer(),
 
 			/* Generate */
-			NWidget(WWT_PUSHTXTBTN, Colours::Green, WID_GL_GENERATE_BUTTON), SetMinimalTextLines(3, 0), SetStringTip(STR_MAPGEN_GENERATE, STR_MAPGEN_GENERATE_TOOLTIP), SetFill(1, 1),
+			NWidget(WWT_PUSHTXTBTN, Colours::Green, WID_GL_GENERATE_BUTTON), SetMinimalTextLines(2, 0), SetStringTip(STR_MAPGEN_GENERATE, STR_MAPGEN_GENERATE_TOOLTIP), SetFill(1, 1),
 		EndContainer(),
 	EndContainer(),
 };

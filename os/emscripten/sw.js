@@ -1,4 +1,4 @@
-const CACHE_NAME = 'openttd-v7-landscape-menu-fix';
+const CACHE_NAME = 'openttd-v8-ios-layout-fix';
 const PRECACHE_ASSETS = [
   './',
   './index.html',

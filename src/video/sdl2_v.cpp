@@ -210,6 +210,14 @@ bool VideoDriver_SDL_Base::CreateMainSurface(uint w, uint h, bool resize)
 
 	if (!this->CreateMainWindow(w, h)) return false;
 	if (resize) SDL_SetWindowSize(this->sdl_window, w, h);
+#ifdef __EMSCRIPTEN__
+	int actual_w = 0, actual_h = 0;
+	SDL_GetWindowSize(this->sdl_window, &actual_w, &actual_h);
+	if (actual_w > 0 && actual_h > 0) {
+		w = static_cast<uint>(actual_w);
+		h = static_cast<uint>(actual_h);
+	}
+#endif
 	this->ClientSizeChanged(w, h, true);
 
 	/* When in full screen, we will always have the mouse cursor
@@ -577,6 +585,12 @@ static std::optional<std::string_view> InitializeSDL()
 
 #ifdef SDL_HINT_APP_NAME
 	SDL_SetHint(SDL_HINT_APP_NAME, "OpenTTD");
+#endif
+#ifdef SDL_HINT_TOUCH_MOUSE_EVENTS
+	SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "0");
+#endif
+#ifdef SDL_HINT_MOUSE_TOUCH_EVENTS
+	SDL_SetHint(SDL_HINT_MOUSE_TOUCH_EVENTS, "0");
 #endif
 
 	if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) return SDL_GetError();

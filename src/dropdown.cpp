@@ -304,11 +304,20 @@ struct DropdownWindow : Window {
 			this->GetWidget<NWidgetCore>(WID_DM_FILTER_PANEL)->GetParentWidget<NWidgetVertical>()->bottom_up = false;
 		}
 
+		uint total_w = widget_dim.width + (list_dim.height > widget_dim.height ? NWidgetScrollbar::GetVerticalDimension().width : 0);
 		if (_current_text_dir == TD_RTL) {
 			/* In case the list is wider than the parent button, the list should be right aligned to the button and overflow to the left. */
-			this->position.x = button_rect.right + 1 - (int)(widget_dim.width + (list_dim.height > widget_dim.height ? NWidgetScrollbar::GetVerticalDimension().width : 0));
+			this->position.x = button_rect.right + 1 - (int)total_w;
 		} else {
 			this->position.x = button_rect.left;
+		}
+
+		/* Clamp to screen bounds so wide dropdowns don't clip off the right or left edge */
+		if (this->position.x + (int)total_w > _screen.width) {
+			this->position.x = _screen.width - (int)total_w;
+		}
+		if (this->position.x < 0) {
+			this->position.x = 0;
 		}
 
 		this->initial_dim = widget_dim;
